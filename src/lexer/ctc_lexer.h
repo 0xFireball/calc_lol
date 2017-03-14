@@ -7,9 +7,21 @@
 #include <string>
 #include <vector>
 
+#include "charclassifier.h"
+#include "Token.h"
+
 class CTCLexer {
 public:
-    CTCLexer(std::vector<std::string>& source_lines);
-    std::vector<Token> parse();
+    CTCLexer(std::string source);
+    std::vector<Token> tokenize_source();
+
+protected:
+    bool end_of_code();
+    void read_tokens();
+    CharType peek_next_char_type();
+
+private:
+    std::string source_code = "";
+    int read_pos = 0;
 };
 

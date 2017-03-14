@@ -4,6 +4,8 @@
 #include <iterator>
 #include <algorithm>
 
+#include "lexer/ctc_lexer.h"
+
 using namespace std;
 
 int main(int argc, char *argv[]) {
@@ -14,13 +16,17 @@ int main(int argc, char *argv[]) {
         return -1;
     }
 
-    vector<string> sourceCode;
     ifstream sourceFile(argv[1]);
 
+    string source_code = "";
     string l;
     while (std::getline(sourceFile, l))
     {
-        sourceCode.push_back(l);
+        source_code += l + "\n";
     }
+
+    CTCLexer lexer(source_code);
+    lexer.tokenize_source();
+
     return 0;
 }
