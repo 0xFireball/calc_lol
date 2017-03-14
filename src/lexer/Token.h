@@ -4,6 +4,9 @@
 
 #pragma once
 
+enum class TokenKind {
+
+};
 
 class Token {
 
