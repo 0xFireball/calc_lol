@@ -20,7 +20,7 @@ std::vector<Token> CTCLexer::tokenize_source() {
     std::vector<Token> tokens;
     std::string working = "";
 
-
+    return tokens;
 }
 
 CharType CTCLexer::peek_next_char_type() {
