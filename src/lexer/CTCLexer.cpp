@@ -6,7 +6,7 @@
 #include <vector>
 #include <stdexcept>
 
-#include "ctc_lexer.h"
+#include "CTCLexer.h"
 #include "Token.h"
 
 CTCLexer::CTCLexer(std::string source) : source_code(source) {
