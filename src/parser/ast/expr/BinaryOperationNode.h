@@ -4,7 +4,7 @@
 #include "../ExpressionNode.h"
 #include "ExpressionOperationType.h"
 
-class BinaryOperationNode : ExpressionNode {
+class BinaryOperationNode : public ExpressionNode {
 public:
     BinaryOperationNode(ExpressionOperationType expressionType, ExpressionNode operandA, ExpressionNode operandB)
             : exprType(expressionType),

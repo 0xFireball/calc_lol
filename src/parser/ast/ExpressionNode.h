@@ -7,7 +7,7 @@
 
 class ExpressionNode : public AstNode {
 public:
-    static ExpressionNode create_from_tokens(std::vector<Token> tokens);
+    static ExpressionNode create_from_tokens(std::vector<Token> &tokens);
 protected:
     ExpressionNode() {}
 };
