@@ -8,6 +8,7 @@
 
 enum class TokenKind {
     ARG_SEP,
+    STMT_SEP,
 
     // Braces
 
@@ -28,6 +29,8 @@ enum class TokenKind {
 
     OPERATOR
 };
+
+bool identifier_is_keyword(std::string identifier);
 
 class Token {
 public:
