@@ -1,19 +1,43 @@
 
 #include <string>
 #include "Parser.h"
+#include "ast/VariableAssignmentNode.h"
+#include "ast/ExpressionNode.h"
 
 Parser::Parser(std::vector<Token> tokens) : tokens(std::move(tokens)) {
 
 }
 
-StatementSequenceNode Parser::peek_scope() {
+std::shared_ptr<StatementSequenceNode> Parser::peek_scope() {
     return scopes.top();
 }
 
 ProgramNode Parser::parse_to_ast() {
-    scopes.push(ProgramNode());
+    scopes.push(std::shared_ptr<StatementSequenceNode>(new ProgramNode()));
 
-    ProgramNode ret = static_cast<ProgramNode &>(scopes.top());
+    while (!at_program_end()) {
+        auto upcomingToken = peek_next_token();
+        switch (upcomingToken.get_kind()) {
+            case TokenKind::KEYWORD: {
+                Token keyword = take_token();
+                bool atGlobalScope = scopes.size() == 1;
+                // TODO
+                break;
+            }
+            case TokenKind::IDENTIFIER: {
+                Token identifier = take_token();
+                auto nextToken = peek_next_token();
+                if (nextToken.get_kind() == TokenKind::OPERATOR && nextToken.get_content() == "=") {
+                    // assignment operator
+                    take_token(); // eat the assignment operator
+                    std::vector<Token> valueExpression = read_until_statement_end();
+                    peek_scope()->append_statement(VariableAssignmentNode(identifier.get_content(), ExpressionNode::create_from_tokens(valueExpression)));
+                }
+            }
+        }
+    }
+
+    ProgramNode ret = static_cast<ProgramNode &>(*scopes.top());
     scopes.pop();
     return ret;
 }

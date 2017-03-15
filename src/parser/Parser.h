@@ -12,6 +12,7 @@
 #pragma once
 
 #include <stdexcept>
+#include <memory>
 
 class UnexpectedTokenException : public std::logic_error {
 public:
@@ -25,7 +26,7 @@ public:
     ProgramNode parse_to_ast();
 
 protected:
-    StatementSequenceNode peek_scope();
+    std::shared_ptr<StatementSequenceNode> peek_scope();
 
     bool at_program_end();
 
@@ -44,5 +45,5 @@ protected:
 private:
     std::vector<Token> tokens;
     int read_pos = 0;
-    std::stack<StatementSequenceNode> scopes;
+    std::stack<std::shared_ptr<StatementSequenceNode>> scopes;
 };
