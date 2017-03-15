@@ -29,7 +29,7 @@ int main(int argc, char *argv[]) {
     }
 
     CTCLexer lexer(source_code);
-    lexer.tokenize_source();
+    auto tokens = lexer.tokenize_source();
 
     return 0;
 }
