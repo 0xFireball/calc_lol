@@ -19,7 +19,7 @@ bool CTCLexer::end_of_code() {
 
 std::vector<Token> CTCLexer::tokenize_source() {
     std::vector<Token> tokens;
-    std::string working = "";
+    std::string working;
 
     // TODO: Clean up comments or just tokenize them. whatever.
 
