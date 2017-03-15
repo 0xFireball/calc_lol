@@ -6,7 +6,10 @@
 
 #include "lexer/ctc_lexer.h"
 
-using namespace std;
+using std::cout;
+using std::cerr;
+using std::cin;
+using std::endl;
 
 int main(int argc, char *argv[]) {
     cout << "CookieToastCompiler Version Negative Four" << endl;
@@ -16,10 +19,10 @@ int main(int argc, char *argv[]) {
         return -1;
     }
 
-    ifstream sourceFile(argv[1]);
+    std::ifstream sourceFile(argv[1]);
 
-    string source_code = "";
-    string l;
+    std::string source_code = "";
+    std::string l;
     while (std::getline(sourceFile, l))
     {
         source_code += l + "\n";

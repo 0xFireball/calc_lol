@@ -23,7 +23,6 @@ protected:
     char take_next_char();
 
 private:
-    std::string source_code = "";
+    std::string source_code;
     int read_pos = 0;
 };
-

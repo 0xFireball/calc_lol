@@ -8,8 +8,8 @@
 #include "ctc_lexer.h"
 #include "Token.h"
 
-CTCLexer::CTCLexer(std::string source) {
-    source_code = source;
+CTCLexer::CTCLexer(std::string source):source_code(source) {
+  
 }
 
 bool CTCLexer::end_of_code() {
@@ -18,7 +18,7 @@ bool CTCLexer::end_of_code() {
 
 std::vector<Token> CTCLexer::tokenize_source() {
     std::vector<Token> tokens;
-    std::string working = "";
+    std::string working;
 
     return tokens;
 }
@@ -38,7 +38,7 @@ char CTCLexer::take_next_char() {
 }
 
 void CTCLexer::read_tokens(std::string working, CharType stopType) {
-    while (!end_of_code() && (((int)peek_next_char_type() & (int)stopType) > 0)) {
+    while (!end_of_code() && ((int)peek_next_char_type() & (int)stopType)) {
         working += take_next_char();
     }
 }
