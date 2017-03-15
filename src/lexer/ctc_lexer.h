@@ -17,10 +17,12 @@ public:
 
 protected:
     bool end_of_code();
-    void read_tokens(std::string working, CharType stopType);
+    void read_tokens(std::string& working, CharType readType);
+    void read_tokens_until(std::string& working, CharType stopType);
     CharType peek_next_char_type();
     char peek_next_char();
     char take_next_char();
+    void skip_character(CharType skipType);
 
 private:
     std::string source_code = "";

@@ -20,6 +20,10 @@ std::vector<Token> CTCLexer::tokenize_source() {
     std::vector<Token> tokens;
     std::string working = "";
 
+    while (!end_of_code()) {
+
+    }
+
     return tokens;
 }
 
@@ -37,8 +41,22 @@ char CTCLexer::take_next_char() {
     return c;
 }
 
-void CTCLexer::read_tokens(std::string working, CharType stopType) {
-    while (!end_of_code() && (((int)peek_next_char_type() & (int)stopType) > 0)) {
+void CTCLexer::read_tokens(std::string &working, CharType readType) {
+    while (!end_of_code() && (((int) peek_next_char_type() & (int) readType) > 0)) {
         working += take_next_char();
+    }
+}
+
+void CTCLexer::read_tokens_until(std::string &working, CharType stopType) {
+    CharType next_type = peek_next_char_type();
+    while (!end_of_code() && (((int) peek_next_char_type() & (int) stopType) == 0)) {
+        working += take_next_char();
+        next_type = peek_next_char_type();
+    }
+}
+
+void CTCLexer::skip_character(CharType skipType) {
+    while (((int) peek_next_char_type() & (int) skipType) > 0) {
+        take_next_char();
     }
 }
