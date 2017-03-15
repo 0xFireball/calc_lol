@@ -1,6 +1,4 @@
-//
-// Created by Nihal.Talur19 on 3/14/2017.
-//
+
 #include "charclassifier.h"
 
 CharType classify_char(char c) {
