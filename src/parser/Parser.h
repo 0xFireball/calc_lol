@@ -30,7 +30,7 @@ protected:
 
     bool at_program_end();
 
-    std::vector<Token> read_until_token(TokenKind endKind);
+    std::vector<Token> read_until_token(TokenKind endKind, bool eatEnd = true);
 
     std::vector<Token> read_until_statement_end();
 
@@ -40,7 +40,7 @@ protected:
 
     Token take_token();
 
-    std::vector<Token> read_token_sequence(TokenKind expectedTokenKinds[]);
+    std::vector<Token> read_token_sequence(std::vector<TokenKind> expectedTokenKinds, bool eatEnd = true);
 
 private:
     std::vector<Token> tokens;

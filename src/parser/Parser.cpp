@@ -1,5 +1,6 @@
 
 #include <string>
+#include <algorithm>
 #include "Parser.h"
 #include "ast/VariableAssignmentNode.h"
 #include "ast/ExpressionNode.h"
@@ -47,10 +48,6 @@ bool Parser::at_program_end() {
     return read_pos >= tokens.size();
 }
 
-std::vector<Token> Parser::read_token_sequence(TokenKind *expectedTokenKinds) {
-    // TODO
-}
-
 Token Parser::take_token() {
     auto ret = peek_next_token();
     ++read_pos;
@@ -72,16 +69,34 @@ Token Parser::read_expected_token(TokenKind kind) {
     }
 }
 
-std::vector<Token> Parser::read_until_token(TokenKind endKind) {
+std::vector<Token> Parser::read_until_token(TokenKind endKind, bool eatEnd) {
     std::vector<Token> read_tokens;
     auto upcomingToken = peek_next_token();
     while (!at_program_end() && !(upcomingToken.get_kind() != endKind)) {
         read_tokens.push_back(take_token());
         upcomingToken = peek_next_token();
     }
-    take_token(); // eat the statement separator
+    if (eatEnd) {
+        take_token(); // eat the end 
+    }
+    return read_tokens;
+}
+
+std::vector<Token> Parser::read_token_sequence(std::vector<TokenKind> expectedTokenKinds, bool eatEnd) {
+    std::vector<Token> read_tokens;
+    auto upcomingToken = peek_next_token();
+    while (!at_program_end() &&
+           std::find(std::begin(expectedTokenKinds), std::end(expectedTokenKinds), upcomingToken.get_kind()) !=
+           std::end(expectedTokenKinds)) {
+        read_tokens.push_back(take_token());
+        upcomingToken = peek_next_token();
+    }
+    if (eatEnd) {
+        take_token(); // eat the end 
+    }
+    return read_tokens;
 }
 
 std::vector<Token> Parser::read_until_statement_end() {
-    return read_until_token(TokenKind::STMT_SEP);
+    return read_until_token(TokenKind::STMT_SEP, true);
 }
