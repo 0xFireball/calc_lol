@@ -9,12 +9,12 @@
 #include "ctc_lexer.h"
 #include "Token.h"
 
-CTCLexer::CTCLexer(std::string source):source_code(source) {
-    
+CTCLexer::CTCLexer(std::string source) : source_code(source) {
+
 }
 
 bool CTCLexer::end_of_code() {
-    return read_pos >= source_code.length();
+    return read_pos >= source_code.length() - 1;
 }
 
 std::vector<Token> CTCLexer::tokenize_source() {
@@ -34,7 +34,7 @@ std::vector<Token> CTCLexer::tokenize_source() {
                 if (identifier_is_keyword(working))
                     tokens.push_back(Token(TokenKind::KEYWORD, working));
                 else
-                tokens.push_back(Token(TokenKind::IDENTIFIER, working));
+                    tokens.push_back(Token(TokenKind::IDENTIFIER, working));
                 working.clear();
                 break;
 
