@@ -41,20 +41,8 @@ char CTCLexer::take_next_char() {
     return c;
 }
 
-<<<<<<< HEAD
 void CTCLexer::read_tokens(std::string working, CharType stopType) {
     while (!end_of_code() && ((int)peek_next_char_type() & (int)stopType)) {
-=======
-void CTCLexer::read_tokens(std::string &working, CharType readType) {
-    while (!end_of_code() && (((int) peek_next_char_type() & (int) readType) > 0)) {
-        working += take_next_char();
-    }
-}
-
-void CTCLexer::read_tokens_until(std::string &working, CharType stopType) {
-    CharType next_type = peek_next_char_type();
-    while (!end_of_code() && (((int) peek_next_char_type() & (int) stopType) == 0)) {
->>>>>>> 9a8a3cf695c68cb3306cb65492d20ea1019248c1
         working += take_next_char();
         next_type = peek_next_char_type();
     }
