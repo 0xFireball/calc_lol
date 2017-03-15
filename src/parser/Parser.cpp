@@ -1,4 +1,5 @@
 
+#include <string>
 #include "Parser.h"
 
 Parser::Parser(std::vector<Token> tokens) : tokens(std::move(tokens)) {
@@ -33,4 +34,15 @@ Token Parser::take_token() {
 
 Token Parser::peek_next_token() {
     return tokens[read_pos];
+}
+
+Token Parser::read_expected_token(TokenKind kind) {
+    auto upcomingToken = peek_next_token();
+    auto t_kind = upcomingToken.get_kind();
+    if (t_kind == kind) {
+        // valid, advance and return
+        return take_token();
+    } else {
+        throw UnexpectedTokenException("Unexpected token: " + std::to_string((int)t_kind));
+    }
 }

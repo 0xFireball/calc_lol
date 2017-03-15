@@ -15,7 +15,7 @@
 
 class UnexpectedTokenException : public std::logic_error {
 public:
-    UnexpectedTokenException() : std::logic_error("The method or operation is not implemented.") {};
+    UnexpectedTokenException(std::string msg) : std::logic_error(msg) {};
 };
 
 class Parser {
@@ -28,6 +28,8 @@ protected:
     StatementSequenceNode peek_scope();
 
     bool at_program_end();
+
+    Token read_expected_token(TokenKind kind);
 
     Token peek_next_token();
 
