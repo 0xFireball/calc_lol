@@ -43,6 +43,20 @@ Token Parser::read_expected_token(TokenKind kind) {
         // valid, advance and return
         return take_token();
     } else {
-        throw UnexpectedTokenException("Unexpected token: " + std::to_string((int)t_kind));
+        throw UnexpectedTokenException("Unexpected token: " + std::to_string((int) t_kind));
     }
+}
+
+std::vector<Token> Parser::read_until_token(TokenKind endKind) {
+    std::vector<Token> read_tokens;
+    auto upcomingToken = peek_next_token();
+    while (!at_program_end() && !(upcomingToken.get_kind() != endKind)) {
+        read_tokens.push_back(take_token());
+        upcomingToken = peek_next_token();
+    }
+    take_token(); // eat the statement separator
+}
+
+std::vector<Token> Parser::read_until_statement_end() {
+    return read_until_token(TokenKind::STMT_SEP);
 }

@@ -29,6 +29,10 @@ protected:
 
     bool at_program_end();
 
+    std::vector<Token> read_until_token(TokenKind endKind);
+
+    std::vector<Token> read_until_statement_end();
+
     Token read_expected_token(TokenKind kind);
 
     Token peek_next_token();
