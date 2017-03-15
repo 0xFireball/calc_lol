@@ -6,7 +6,9 @@
 
 class AstNode {
 public:
-    virtual void emit_code(CodeEmitter& emitter);
+    virtual ~AstNode() {} // virtual destructor
+    virtual void emit_code(CodeEmitter& emitter) = 0;
+    
 protected:
     AstNodeKind kind = AstNodeKind::NONE;
 };

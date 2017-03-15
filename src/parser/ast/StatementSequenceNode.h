@@ -5,7 +5,7 @@
 #include <algorithm>
 #include "AstNode.h"
 
-class StatementSequenceNode {
+class StatementSequenceNode : public AstNode {
 public:
     StatementSequenceNode() {}
 
@@ -16,6 +16,8 @@ public:
     std::vector<AstNode> get_sub_nodes() { return subnodes; }
 
     void append_statement(AstNode node);
+    
+    virtual void emit_code(CodeEmitter& emitter) {}
 
 private:
     std::vector<AstNode> subnodes;
