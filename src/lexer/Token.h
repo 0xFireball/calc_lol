@@ -31,9 +31,8 @@ enum class TokenKind {
 
 class Token {
 public:
-    Token(TokenKind kind, std::string content) {
-        this->kind = kind;
-        this->content = content;
+    Token(TokenKind kind, std::string content):kind(kind), content(content) {
+        
     }
 
 private:
