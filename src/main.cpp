@@ -4,7 +4,7 @@
 #include <iterator>
 #include <algorithm>
 
-#include "lexer/ctc_lexer.h"
+#include "lexer/CTCLexer.h"
 
 using std::cout;
 using std::cerr;
