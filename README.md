@@ -7,7 +7,7 @@ right now? a basic AST generator.
 
 the goal?
 
-ti calculator targeting high level language compiler from scratch
+high level language compiler that targets TI calculators built from scratch
 
 ### goals
 
