@@ -31,7 +31,7 @@ std::vector<Token> CTCLexer::tokenize_source() {
         switch (nextCharType) {
             case CharType::ALPHA: //start of identifier
                 read_tokens(working, CharType::ALPHANUMERIC);
-                if (KeywordToken.IsKeyword(working))
+                if (identifier_is_keyword(working))
                     tokens.push_back(Token(TokenKind::KEYWORD, working));
                 else
                 tokens.push_back(Token(TokenKind::IDENTIFIER, working));

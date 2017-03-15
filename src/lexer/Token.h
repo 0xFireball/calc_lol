@@ -30,6 +30,8 @@ enum class TokenKind {
     OPERATOR
 };
 
+bool identifier_is_keyword(std::string identifier);
+
 class Token {
 public:
     Token(TokenKind kind, std::string content):kind(kind), content(content) {
