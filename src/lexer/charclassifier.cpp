@@ -43,6 +43,7 @@ CharType classify_char(char c) {
 
         case '_': //Technically you can start an identifier with this
             return CharType::ALPHA;
+
         case ' ':
         case '\t':
             return CharType::INLINE_SPACE;

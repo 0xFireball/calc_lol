@@ -21,7 +21,7 @@ std::vector<Token> CTCLexer::tokenize_source() {
     std::string working = "";
 
     while (!end_of_code()) {
-
+        
     }
 
     return tokens;
