@@ -8,8 +8,8 @@
 #include "ctc_lexer.h"
 #include "Token.h"
 
-CTCLexer::CTCLexer(std::string source) {
-    source_code = source;
+CTCLexer::CTCLexer(std::string source):source_code(source) {
+    
 }
 
 bool CTCLexer::end_of_code() {
