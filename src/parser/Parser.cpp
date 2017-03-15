@@ -12,9 +12,11 @@ StatementSequenceNode Parser::peek_scope() {
 ProgramNode Parser::parse_to_ast() {
     scopes.push(ProgramNode());
 
-    return (ProgramNode)scopes.pop();
+    ProgramNode ret = static_cast<ProgramNode &>(scopes.top());
+    scopes.pop();
+    return ret;
 }
 
 bool Parser::at_program_end() {
-    return read_pos >= tokens.length();
+    return read_pos >= tokens.size();
 }

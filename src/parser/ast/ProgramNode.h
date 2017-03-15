@@ -4,5 +4,7 @@
 #include "StatementSequenceNode.h"
 
 // A node representing the whole program; this should be the AST root
-class ProgramNode : StatementSequenceNode {
+class ProgramNode : public StatementSequenceNode {
+public:
+    ProgramNode() : StatementSequenceNode() {}
 };
