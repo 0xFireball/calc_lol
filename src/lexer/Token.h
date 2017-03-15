@@ -8,6 +8,7 @@
 
 enum class TokenKind {
     ARG_SEP,
+    STMT_SEP,
 
     // Braces
 
