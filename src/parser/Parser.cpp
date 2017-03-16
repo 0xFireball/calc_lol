@@ -33,16 +33,20 @@ std::shared_ptr<ProgramNode> Parser::parse_to_ast() {
                     Token varName = read_expected_token(TokenKind::IDENTIFIER);
                     Token lookahead = peek_next_token();
                     // if the lookahead is an assignment operator, a variable declaration
-                    if (lookahead.get_kind() == TokenKind::OPERATOR && lookahead.get_content() == "=")
-                    {
-                        // eat the assignment operator
-                        take_token();
-                        std::vector<Token> valueExpression = read_until_statement_end();
-                        std::shared_ptr<ExpressionNode> value_expr_tree = ExpressionNode::create_from_tokens(
-                                valueExpression);
-                        peek_scope()->append_statement<VariableDeclarationNode>(varName.get_content(), value_expr_tree);
+                    if ((lookahead.get_kind() == TokenKind::OPERATOR && lookahead.get_content() == "=") ||
+                        (lookahead.get_kind() == TokenKind::STMT_SEP)) {
+                        if (lookahead.get_kind() == TokenKind::OPERATOR) {
+                            // eat the assignment operator
+                            take_token();
+                            std::vector<Token> valueExpression = read_until_statement_end();
+                            std::shared_ptr<ExpressionNode> value_expr_tree = ExpressionNode::create_from_tokens(
+                                    valueExpression);
+                            peek_scope()->append_statement<VariableDeclarationNode>(varName.get_content(),
+                                                                                    value_expr_tree);
+                        } else {
+                            peek_scope()->append_statement<VariableDeclarationNode>(varName.get_content());
+                        }
                     }
-
                 } else {
                     // control keyword
                 }

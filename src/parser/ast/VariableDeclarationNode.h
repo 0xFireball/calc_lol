@@ -11,6 +11,10 @@ public:
             variable_name), expr(expression) {
     }
 
+    VariableDeclarationNode(std::string variable_name) : var_name(
+            variable_name), expr(nullptr) {
+    }
+
     virtual void emit_code(CodeEmitter &emitter) {}
 
 private:
