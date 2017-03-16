@@ -35,8 +35,8 @@ public:
         
     }
 
-    TokenKind get_kind() { return kind; }
-    std::string get_content() { return content; }
+    TokenKind get_kind() const { return kind; }
+    const std::string& get_content() const { return content; }
 
 private:
     std::string content;
