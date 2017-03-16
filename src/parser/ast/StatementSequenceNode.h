@@ -10,7 +10,7 @@ class StatementSequenceNode : public AstNode {
 public:
     StatementSequenceNode() {}
 
-    StatementSequenceNode(std::vector<std::unique_ptr<AstNode>> sequence_nodes) : subnodes(std::move(sequence_nodes)) {
+    StatementSequenceNode(std::vector<std::shared_ptr<AstNode>> &sequence_nodes) : subnodes(std::move(sequence_nodes)) {
 
     }
 
