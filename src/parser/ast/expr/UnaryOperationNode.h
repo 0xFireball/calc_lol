@@ -16,6 +16,8 @@ public:
 
     ExpressionNode get_operand() { return opA; }
 
+    virtual void emit_code(CodeEmitter& emitter) {}
+
 private:
     ExpressionOperationType exprType;
     ExpressionNode opA;

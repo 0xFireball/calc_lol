@@ -33,8 +33,8 @@ int main(int argc, char *argv[]) {
     CTCLexer lexer(source_code);
     std::vector<Token> tokens = lexer.tokenize_source();
 
-//    Parser parser(tokens);
-//    auto progNode = parser.parse_to_ast();
+    Parser parser(tokens);
+    auto progNode = parser.parse_to_ast();
 
     return 0;
 }
