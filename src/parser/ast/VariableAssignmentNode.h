@@ -7,7 +7,7 @@
 
 class VariableAssignmentNode : public AstNode {
 public:
-    VariableAssignmentNode(std::string variable_name, const ExpressionNode &expression) : var_name(variable_name),
+    VariableAssignmentNode(std::string variable_name, std::shared_ptr<ExpressionNode> expression) : var_name(variable_name),
                                                                                     expr(expression) {
     }
     
@@ -15,5 +15,5 @@ public:
 
 private:
     std::string var_name;
-    const ExpressionNode &expr;
+    std::shared_ptr<ExpressionNode> expr;
 };
