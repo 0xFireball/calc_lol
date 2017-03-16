@@ -47,6 +47,11 @@ std::shared_ptr<ProgramNode> Parser::parse_to_ast() {
                             peek_scope()->append_statement<VariableDeclarationNode>(varName.get_content());
                         }
                     }
+                    else if (atGlobalScope && (lookahead.get_kind() == TokenKind::ROUND_BRACE))
+                    {
+                        // A function declaration
+                        // TODO
+                    }
                 } else {
                     // control keyword
                 }
