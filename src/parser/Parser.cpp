@@ -13,9 +13,9 @@ std::shared_ptr<StatementSequenceNode> Parser::peek_scope() {
     return scopes.top();
 }
 
-ProgramNode Parser::parse_to_ast() {
-    ProgramNode programNode = ProgramNode();
-    scopes.push(std::shared_ptr<StatementSequenceNode>(&programNode));
+std::shared_ptr<ProgramNode> Parser::parse_to_ast() {
+    std::shared_ptr<ProgramNode> programNode(new ProgramNode());
+    scopes.push(programNode);
 
     while (!at_program_end()) {
         Token upcomingToken = peek_next_token();

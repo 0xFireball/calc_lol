@@ -23,7 +23,7 @@ class Parser {
 public:
     Parser(std::vector<Token> tokens);
 
-    ProgramNode parse_to_ast();
+    std::shared_ptr<ProgramNode> parse_to_ast();
 
 protected:
     std::shared_ptr<StatementSequenceNode> peek_scope();
