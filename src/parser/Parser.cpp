@@ -17,7 +17,7 @@ ProgramNode Parser::parse_to_ast() {
     scopes.push(std::shared_ptr<StatementSequenceNode>(new ProgramNode()));
 
     while (!at_program_end()) {
-        auto upcomingToken = peek_next_token();
+        Token upcomingToken = peek_next_token();
         switch (upcomingToken.get_kind()) {
             case TokenKind::KEYWORD: {
                 Token keyword = take_token();
@@ -27,7 +27,7 @@ ProgramNode Parser::parse_to_ast() {
             }
             case TokenKind::IDENTIFIER: {
                 Token identifier = take_token();
-                auto nextToken = peek_next_token();
+                Token nextToken = peek_next_token();
                 if (nextToken.get_kind() == TokenKind::OPERATOR && nextToken.get_content() == "=") {
                     // assignment operator
                     take_token(); // eat the assignment operator
@@ -51,7 +51,7 @@ bool Parser::at_program_end() {
 }
 
 Token Parser::take_token() {
-    auto ret = peek_next_token();
+    Token ret = peek_next_token();
     ++read_pos;
     return ret;
 }
@@ -61,8 +61,8 @@ Token Parser::peek_next_token() {
 }
 
 Token Parser::read_expected_token(TokenKind kind) {
-    auto upcomingToken = peek_next_token();
-    auto t_kind = upcomingToken.get_kind();
+    Token upcomingToken = peek_next_token();
+    TokenKind t_kind = upcomingToken.get_kind();
     if (t_kind == kind) {
         // valid, advance and return
         return take_token();
@@ -73,7 +73,7 @@ Token Parser::read_expected_token(TokenKind kind) {
 
 std::vector<Token> Parser::read_until_token(TokenKind endKind, bool eatEnd) {
     std::vector<Token> read_tokens;
-    auto upcomingToken = peek_next_token();
+    Token upcomingToken = peek_next_token();
     while (!at_program_end() && !(upcomingToken.get_kind() != endKind)) {
         read_tokens.push_back(take_token());
         upcomingToken = peek_next_token();
@@ -86,7 +86,7 @@ std::vector<Token> Parser::read_until_token(TokenKind endKind, bool eatEnd) {
 
 std::vector<Token> Parser::read_token_sequence(std::vector<TokenKind> expectedTokenKinds, bool eatEnd) {
     std::vector<Token> read_tokens;
-    auto upcomingToken = peek_next_token();
+    Token upcomingToken = peek_next_token();
     while (!at_program_end() &&
            std::find(std::begin(expectedTokenKinds), std::end(expectedTokenKinds), upcomingToken.get_kind()) !=
            std::end(expectedTokenKinds)) {
