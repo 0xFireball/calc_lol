@@ -37,6 +37,7 @@ std::shared_ptr<ProgramNode> Parser::parse_to_ast() {
                     std::shared_ptr<ExpressionNode> value_expr_tree = ExpressionNode::create_from_tokens(valueExpression);
                     peek_scope()->append_statement<VariableAssignmentNode>(identifier.get_content(), value_expr_tree);
                 }
+                break;
             }
             default:
                 throw UnexpectedTokenException("The parser encountered an unexpected token");
@@ -75,7 +76,7 @@ Token Parser::read_expected_token(TokenKind kind) {
 std::vector<Token> Parser::read_until_token(TokenKind endKind, bool eatEnd) {
     std::vector<Token> read_tokens;
     Token upcomingToken = peek_next_token();
-    while (!at_program_end() && !(upcomingToken.get_kind() != endKind)) {
+    while (!at_program_end() && upcomingToken.get_kind() != endKind) {
         read_tokens.push_back(take_token());
         upcomingToken = peek_next_token();
     }

@@ -10,5 +10,5 @@
  * */
 class ExpressionParser {
 public:
-    static std::shared_ptr<ExpressionNode> parse(std::vector<Token> &tokens);
+    static std::shared_ptr<ExpressionNode> parse(const std::vector<Token> &tokens);
 };
