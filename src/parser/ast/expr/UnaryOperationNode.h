@@ -6,19 +6,19 @@
 
 class UnaryOperationNode : public ExpressionNode {
 public:
-    UnaryOperationNode(ExpressionOperationType expressionType, ExpressionNode operand)
+    UnaryOperationNode(ExpressionOperationType expressionType, ExpressionNode* operand)
             : exprType(expressionType),
               opA(operand) {
 
     }
 
-    ExpressionOperationType get_expr_type() { return exprType; }
+    ExpressionOperationType get_expr_type() const { return exprType; }
 
-    ExpressionNode get_operand() { return opA; }
+    ExpressionNode* get_operand() const { return opA.get(); }
 
     virtual void emit_code(CodeEmitter& emitter) {}
 
 private:
     ExpressionOperationType exprType;
-    ExpressionNode opA;
+    std::unique_ptr<ExpressionNode> opA;
 };

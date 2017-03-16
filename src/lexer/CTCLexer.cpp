@@ -81,13 +81,13 @@ std::vector<Token> CTCLexer::tokenize_source() {
                 char c = take_next_char();
                 TokenKind braceTokenKind;
                 switch (c) {
-                    case '(':
+                    case ')':
                         braceTokenKind = TokenKind::CLOSE_ROUND_BRACE;
                         break;
-                    case '[':
+                    case ']':
                         braceTokenKind = TokenKind::CLOSE_SQUARE_BRACE;
                         break;
-                    case '{':
+                    case '}':
                         braceTokenKind = TokenKind::CLOSE_CURLY_BRACE;
                         break;
                     default:

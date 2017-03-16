@@ -1,5 +1,5 @@
 
-num a = 1;
-num b = 2;
-num c = a + b;
-num d = c + 5;
+int a = 1;
+int b = 2;
+int c = a + b;
+int d = 3 + 4 * 2/(1-5)*c;
