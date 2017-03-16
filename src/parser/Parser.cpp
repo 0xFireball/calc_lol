@@ -24,9 +24,26 @@ std::shared_ptr<ProgramNode> Parser::parse_to_ast() {
                 Token keyword = take_token();
                 bool atGlobalScope = scopes.size() == 1;
                 // TODO
-                if (keyword_is_type_keyword(keyword.get_content()))
-                {
-                    
+                if (keyword_is_type_keyword(keyword.get_content())) {
+                    // type keyword:
+                    // if in global scope, could be a function, otherwise a var declaration
+
+                    std::string type = keyword.get_content();
+                    Token varName = read_expected_token(TokenKind::IDENTIFIER);
+                    Token lookahead = peek_next_token();
+                    // if the lookahead is an assignment operator, a variable declaration
+                    if ((lookahead.get_kind() == TokenKind::OPERATOR && lookahead.get_content() == "=")
+                    {
+                        // eat the assignment operator
+                        take_token();
+                        std::vector<Token> valueExpression = read_until_statement_end();
+                        std::shared_ptr<ExpressionNode> value_expr_tree = ExpressionNode::create_from_tokens(
+                                valueExpression);
+                        peek_scope()->append_statement<VariableAssignmentNode>(varName, value_expr_tree);
+                    }
+
+                } else {
+                    // control keyword
                 }
                 break;
             }
@@ -37,7 +54,8 @@ std::shared_ptr<ProgramNode> Parser::parse_to_ast() {
                     // assignment operator
                     take_token(); // eat the assignment operator
                     std::vector<Token> valueExpression = read_until_statement_end();
-                    std::shared_ptr<ExpressionNode> value_expr_tree = ExpressionNode::create_from_tokens(valueExpression);
+                    std::shared_ptr<ExpressionNode> value_expr_tree = ExpressionNode::create_from_tokens(
+                            valueExpression);
                     peek_scope()->append_statement<VariableAssignmentNode>(identifier.get_content(), value_expr_tree);
                 }
                 break;
