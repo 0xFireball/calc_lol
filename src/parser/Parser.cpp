@@ -24,6 +24,7 @@ std::shared_ptr<ProgramNode> Parser::parse_to_ast() {
                 Token keyword = take_token();
                 bool atGlobalScope = scopes.size() == 1;
                 // TODO
+
                 break;
             }
             case TokenKind::IDENTIFIER: {
@@ -33,7 +34,7 @@ std::shared_ptr<ProgramNode> Parser::parse_to_ast() {
                     // assignment operator
                     take_token(); // eat the assignment operator
                     std::vector<Token> valueExpression = read_until_statement_end();
-                    ExpressionNode value_expr_tree = ExpressionNode::create_from_tokens(valueExpression);
+                    std::shared_ptr<ExpressionNode> value_expr_tree = ExpressionNode::create_from_tokens(valueExpression);
                     peek_scope()->append_statement<VariableAssignmentNode>(identifier.get_content(), value_expr_tree);
                 }
             }
