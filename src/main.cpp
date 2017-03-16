@@ -5,6 +5,7 @@
 #include <algorithm>
 
 #include "lexer/CTCLexer.h"
+#include "parser/Parser.h"
 
 using std::cout;
 using std::cerr;
@@ -25,11 +26,15 @@ int main(int argc, char *argv[]) {
     std::string l;
     while (std::getline(sourceFile, l))
     {
-        source_code += l + "\n";
+        source_code += l;
+        source_code += '\n';
     }
 
     CTCLexer lexer(source_code);
-    auto tokens = lexer.tokenize_source();
+    std::vector<Token> tokens = lexer.tokenize_source();
+
+//    Parser parser(tokens);
+//    auto progNode = parser.parse_to_ast();
 
     return 0;
 }
