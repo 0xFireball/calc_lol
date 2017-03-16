@@ -36,6 +36,8 @@ ProgramNode Parser::parse_to_ast() {
                     peek_scope()->append_statement(VariableAssignmentNode(identifier.get_content(), value_expr_tree));
                 }
             }
+            default:
+                throw UnexpectedTokenException("The parser encountered an unexpected token");
         }
     }
 

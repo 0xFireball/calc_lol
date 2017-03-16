@@ -15,9 +15,9 @@ public:
 
     std::vector<AstNode> get_sub_nodes() { return subnodes; }
 
-    void append_statement(AstNode node);
-    
-    virtual void emit_code(CodeEmitter& emitter) {}
+    void append_statement(AstNode &node);
+
+    virtual void emit_code(CodeEmitter &emitter) {}
 
 private:
     std::vector<AstNode> subnodes;
