@@ -8,18 +8,26 @@
 
 class StatementSequenceNode : public AstNode {
 public:
-    StatementSequenceNode() {}
+    using nodelist_t = std::vector<std::unique_ptr<AstNode>>;
 
-    StatementSequenceNode(std::vector<std::shared_ptr<AstNode>> &sequence_nodes) : subnodes(std::move(sequence_nodes)) {
+    StatementSequenceNode() {}
+    StatementSequenceNode(StatementSequenceNode&& other) = default; // moveable
+    StatementSequenceNode(const StatementSequenceNode&) = delete; // non-copyable because of the children list stuff
+
+    StatementSequenceNode(nodelist_t&& sequence_nodes) : subnodes(std::move(sequence_nodes)) {
 
     }
 
-    std::vector<std::shared_ptr<AstNode>> get_sub_nodes() { return subnodes; }
+    nodelist_t& get_sub_nodes() { return subnodes; }
+    const nodelist_t& get_sub_nodes() const { return subnodes; }
 
-    void append_statement(AstNode &node);
+    template<class NodeType, class... ArgT>
+    void append_statement(ArgT&&... args) {
+        subnodes.push_back(std::make_unique<NodeType>(std::forward<ArgT>(args)...));
+    }
 
     virtual void emit_code(CodeEmitter &emitter) {}
 
 private:
-    std::vector<std::shared_ptr<AstNode>> subnodes;
+    nodelist_t subnodes;
 };

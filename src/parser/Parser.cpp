@@ -33,7 +33,7 @@ ProgramNode Parser::parse_to_ast() {
                     take_token(); // eat the assignment operator
                     std::vector<Token> valueExpression = read_until_statement_end();
                     ExpressionNode value_expr_tree = ExpressionNode::create_from_tokens(valueExpression);
-                    peek_scope()->append_statement(VariableAssignmentNode(identifier.get_content(), value_expr_tree));
+                    peek_scope()->append_statement<VariableAssignmentNode>(identifier.get_content(), value_expr_tree);
                 }
             }
             default:
