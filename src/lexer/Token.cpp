@@ -5,7 +5,7 @@
 #include "Token.h"
 
 std::map<std::string, bool> keyword_map = {
-        {"if" : false},
+        {"if", false},
         {"while", false},
         {"return", false},
         {"int", true},

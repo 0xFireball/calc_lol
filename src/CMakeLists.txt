@@ -41,5 +41,5 @@ set(SOURCE_FILES
         emit/CodeEmitter.cpp
         emit/CodeEmitter.h
 
-)
+        parser/ast/VariableDeclarationNode.cpp parser/ast/VariableDeclarationNode.h)
 add_executable(CookieToastCompiler ${SOURCE_FILES})

@@ -4,6 +4,7 @@
 #include "Parser.h"
 #include "ast/VariableAssignmentNode.h"
 #include "ast/ExpressionNode.h"
+#include "ast/VariableDeclarationNode.h"
 
 Parser::Parser(std::vector<Token> tokens) : tokens(std::move(tokens)) {
 
@@ -32,14 +33,14 @@ std::shared_ptr<ProgramNode> Parser::parse_to_ast() {
                     Token varName = read_expected_token(TokenKind::IDENTIFIER);
                     Token lookahead = peek_next_token();
                     // if the lookahead is an assignment operator, a variable declaration
-                    if ((lookahead.get_kind() == TokenKind::OPERATOR && lookahead.get_content() == "=")
+                    if (lookahead.get_kind() == TokenKind::OPERATOR && lookahead.get_content() == "=")
                     {
                         // eat the assignment operator
                         take_token();
                         std::vector<Token> valueExpression = read_until_statement_end();
                         std::shared_ptr<ExpressionNode> value_expr_tree = ExpressionNode::create_from_tokens(
                                 valueExpression);
-                        peek_scope()->append_statement<VariableAssignmentNode>(varName, value_expr_tree);
+                        peek_scope()->append_statement<VariableDeclarationNode>(varName.get_content(), value_expr_tree);
                     }
 
                 } else {
