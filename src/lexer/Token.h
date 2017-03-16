@@ -28,6 +28,7 @@ enum class TokenKind {
 };
 
 bool identifier_is_keyword(std::string identifier);
+bool keyword_is_type_keyword(std::string keyword);
 
 class Token {
 public:

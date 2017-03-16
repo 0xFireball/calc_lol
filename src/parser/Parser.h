@@ -7,10 +7,6 @@
 #include "../lexer/Token.h"
 #include "../parser/ast/ProgramNode.h"
 #include "../parser/ast/StatementSequenceNode.h"
-
-
-#pragma once
-
 #include <stdexcept>
 #include <memory>
 

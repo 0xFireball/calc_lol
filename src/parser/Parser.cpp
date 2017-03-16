@@ -24,7 +24,10 @@ std::shared_ptr<ProgramNode> Parser::parse_to_ast() {
                 Token keyword = take_token();
                 bool atGlobalScope = scopes.size() == 1;
                 // TODO
-
+                if (keyword_is_type_keyword(keyword.get_content()))
+                {
+                    
+                }
                 break;
             }
             case TokenKind::IDENTIFIER: {
