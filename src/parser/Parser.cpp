@@ -15,7 +15,8 @@ std::shared_ptr<StatementSequenceNode> Parser::peek_scope() {
 }
 
 std::shared_ptr<ProgramNode> Parser::parse_to_ast() {
-    std::shared_ptr<ProgramNode> programNode(new ProgramNode());
+    auto programNodeInst = new ProgramNode(); // to keep a variable for debugging
+    std::shared_ptr<ProgramNode> programNode(programNodeInst);
     scopes.push(programNode);
 
     while (!at_program_end()) {
@@ -46,9 +47,7 @@ std::shared_ptr<ProgramNode> Parser::parse_to_ast() {
                         } else {
                             peek_scope()->append_statement<VariableDeclarationNode>(varName.get_content());
                         }
-                    }
-                    else if (atGlobalScope && (lookahead.get_kind() == TokenKind::ROUND_BRACE))
-                    {
+                    } else if (atGlobalScope && (lookahead.get_kind() == TokenKind::ROUND_BRACE)) {
                         // A function declaration
                         // TODO
                     }
@@ -76,7 +75,8 @@ std::shared_ptr<ProgramNode> Parser::parse_to_ast() {
     }
 
     scopes.pop();
-    return programNode;}
+    return programNode;
+}
 
 bool Parser::at_program_end() {
     return read_pos >= tokens.size();
