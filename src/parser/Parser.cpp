@@ -4,6 +4,7 @@
 #include "Parser.h"
 #include "ast/VariableAssignmentNode.h"
 #include "ast/ExpressionNode.h"
+#include "ast/VariableDeclarationNode.h"
 
 Parser::Parser(std::vector<Token> tokens) : tokens(std::move(tokens)) {
 
@@ -24,7 +25,36 @@ std::shared_ptr<ProgramNode> Parser::parse_to_ast() {
                 Token keyword = take_token();
                 bool atGlobalScope = scopes.size() == 1;
                 // TODO
+                if (keyword_is_type_keyword(keyword.get_content())) {
+                    // type keyword:
+                    // if in global scope, could be a function, otherwise a var declaration
 
+                    std::string type = keyword.get_content();
+                    Token varName = read_expected_token(TokenKind::IDENTIFIER);
+                    Token lookahead = peek_next_token();
+                    // if the lookahead is an assignment operator, a variable declaration
+                    if ((lookahead.get_kind() == TokenKind::OPERATOR && lookahead.get_content() == "=") ||
+                        (lookahead.get_kind() == TokenKind::STMT_SEP)) {
+                        if (lookahead.get_kind() == TokenKind::OPERATOR) {
+                            // eat the assignment operator
+                            take_token();
+                            std::vector<Token> valueExpression = read_until_statement_end();
+                            std::shared_ptr<ExpressionNode> value_expr_tree = ExpressionNode::create_from_tokens(
+                                    valueExpression);
+                            peek_scope()->append_statement<VariableDeclarationNode>(varName.get_content(),
+                                                                                    value_expr_tree);
+                        } else {
+                            peek_scope()->append_statement<VariableDeclarationNode>(varName.get_content());
+                        }
+                    }
+                    else if (atGlobalScope && (lookahead.get_kind() == TokenKind::ROUND_BRACE))
+                    {
+                        // A function declaration
+                        // TODO
+                    }
+                } else {
+                    // control keyword
+                }
                 break;
             }
             case TokenKind::IDENTIFIER: {
@@ -34,7 +64,8 @@ std::shared_ptr<ProgramNode> Parser::parse_to_ast() {
                     // assignment operator
                     take_token(); // eat the assignment operator
                     std::vector<Token> valueExpression = read_until_statement_end();
-                    std::shared_ptr<ExpressionNode> value_expr_tree = ExpressionNode::create_from_tokens(valueExpression);
+                    std::shared_ptr<ExpressionNode> value_expr_tree = ExpressionNode::create_from_tokens(
+                            valueExpression);
                     peek_scope()->append_statement<VariableAssignmentNode>(identifier.get_content(), value_expr_tree);
                 }
                 break;
@@ -45,8 +76,7 @@ std::shared_ptr<ProgramNode> Parser::parse_to_ast() {
     }
 
     scopes.pop();
-    return programNode;
-}
+    return programNode;}
 
 bool Parser::at_program_end() {
     return read_pos >= tokens.size();
