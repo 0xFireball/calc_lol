@@ -34,7 +34,7 @@ int main(int argc, char *argv[]) {
     std::vector<Token> tokens = lexer.tokenize_source();
 
     Parser parser(tokens);
-    auto progNode = parser.parse_to_ast();
+    std::shared_ptr<ProgramNode> program_ast = parser.parse_to_ast();
 
     return 0;
 }
