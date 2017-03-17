@@ -1,6 +1,7 @@
 
 #include <string>
 #include <algorithm>
+#include <map>
 #include "Parser.h"
 #include "ast/VariableAssignmentNode.h"
 #include "ast/ExpressionNode.h"
@@ -14,10 +15,26 @@ std::shared_ptr<StatementSequenceNode> Parser::peek_scope() {
     return scopes.top();
 }
 
+enum class SymbolKind {
+    VARIABLE,
+    FUNCTION
+};
+
+struct SymbolInformation {
+    SymbolInformation(int symbol_scope, SymbolKind symbol_kind) : scope(symbol_scope), kind(symbol_kind) {
+
+    }
+
+    int scope;
+    SymbolKind kind;
+
+};
+
 std::shared_ptr<ProgramNode> Parser::parse_to_ast() {
     auto programNodeInst = new ProgramNode(); // to keep a variable for debugging
     std::shared_ptr<ProgramNode> programNode(programNodeInst);
     scopes.push(programNode);
+    std::shared_ptr<std::map<std::string, SymbolInformation>> symbol_table(new std::map<std::string, SymbolInformation>());
 
     while (!at_program_end()) {
         Token upcomingToken = peek_next_token();
