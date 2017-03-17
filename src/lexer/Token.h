@@ -4,6 +4,8 @@
 #include <string>
 
 enum class TokenKind {
+    INVALID,
+
     ARG_SEP,
     STMT_SEP,
 
@@ -32,6 +34,7 @@ bool keyword_is_type_keyword(std::string keyword);
 
 class Token {
 public:
+    Token():kind(TokenKind::INVALID), content() {}
     Token(TokenKind kind, std::string content):kind(kind), content(content) {
         
     }

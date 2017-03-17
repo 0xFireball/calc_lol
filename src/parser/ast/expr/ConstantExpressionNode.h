@@ -6,15 +6,14 @@
 
 class ConstantExpressionNode : public ExpressionNode {
 public:
-    ConstantExpressionNode(double value) :
-            val(value) {
+    ConstantExpressionNode(int value) : val(value) {
 
     }
 
-    double get_constant_value() { return val; }
+    int get_constant_value() const { return val; }
 
     virtual void emit_code(CodeEmitter &emitter) {}
 
 private:
-    double val;
+    int val;
 };
