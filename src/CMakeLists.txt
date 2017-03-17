@@ -53,5 +53,5 @@ set(SOURCE_FILES
         emit/CodeEmitter.cpp
         emit/CodeEmitter.h
 
-)
+        preprocessor/Preprocessor.cpp preprocessor/Preprocessor.h)
 add_executable(CookieToastCompiler ${SOURCE_FILES})

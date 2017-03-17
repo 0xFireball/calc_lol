@@ -6,6 +6,7 @@
 
 #include "lexer/CTCLexer.h"
 #include "parser/Parser.h"
+#include "preprocessor/Preprocessor.h"
 
 using std::cout;
 using std::cerr;
@@ -29,6 +30,9 @@ int main(int argc, char *argv[]) {
         source_code += l;
         source_code += '\n';
     }
+
+    Preprocessor preprocessor(source_code);
+    source_code = preprocessor.preprocess_source();
 
     CTCLexer lexer(source_code);
     std::vector<Token> tokens = lexer.tokenize_source();
