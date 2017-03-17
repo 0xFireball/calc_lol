@@ -6,6 +6,7 @@
 #include "ast/VariableAssignmentNode.h"
 #include "ast/ExpressionNode.h"
 #include "ast/VariableDeclarationNode.h"
+#include "ast/FunctionDeclarationNode.h"
 
 Parser::Parser(std::vector<Token> tokens) : tokens(std::move(tokens)) {
 
@@ -47,7 +48,7 @@ std::shared_ptr<ProgramNode> Parser::parse_to_ast() {
                     // if in global scope, could be a function, otherwise a var declaration
 
                     std::string type = keyword.get_content();
-                    Token var_name_tok = read_expected_token(TokenKind::IDENTIFIER);
+                    Token name_tok = read_expected_token(TokenKind::IDENTIFIER);
                     Token lookahead = peek_next_token();
                     // if the lookahead is an assignment operator, a variable declaration
                     if ((lookahead.get_kind() == TokenKind::OPERATOR && lookahead.get_content() == "=") ||
@@ -58,16 +59,18 @@ std::shared_ptr<ProgramNode> Parser::parse_to_ast() {
                             std::vector<Token> valueExpression = read_until_statement_end();
                             std::shared_ptr<ExpressionNode> value_expr_tree = ExpressionNode::create_from_tokens(
                                     valueExpression);
-                            peek_scope()->append_statement<VariableDeclarationNode>(var_name_tok.get_content(),
-                                                                                    value_expr_tree);
+                            peek_scope()->append_new_statement<VariableDeclarationNode>(name_tok.get_content(),
+                                                                                        value_expr_tree);
                         } else {
-                            peek_scope()->append_statement<VariableDeclarationNode>(var_name_tok.get_content());
+                            peek_scope()->append_new_statement<VariableDeclarationNode>(name_tok.get_content());
                         }
                         // register symbol
-                        symbol_table[var_name_tok.get_content()] = std::shared_ptr<SymbolInformation>(new SymbolInformation((int)scopes.size(),
+                        symbol_table[name_tok.get_content()] = std::shared_ptr<SymbolInformation>(new SymbolInformation((int)scopes.size(),
                                                                                                          SymbolKind::VARIABLE));
                     } else if (atGlobalScope && (lookahead.get_kind() == TokenKind::ROUND_BRACE)) {
                         // A function declaration
+                        std::shared_ptr<FunctionDeclarationNode> func = peek_scope()->append_new_statement(name_tok.get_content()); // add the function to the old scope...
+                        scopes.push(func); // ..and set that as the new scope!
                         // TODO
                     }
                 } else {
@@ -89,9 +92,15 @@ std::shared_ptr<ProgramNode> Parser::parse_to_ast() {
                     std::vector<Token> valueExpression = read_until_statement_end();
                     std::shared_ptr<ExpressionNode> value_expr_tree = ExpressionNode::create_from_tokens(
                             valueExpression);
-                    peek_scope()->append_statement<VariableAssignmentNode>(identifier.get_content(), value_expr_tree);
+                    peek_scope()->append_new_statement<VariableAssignmentNode>(identifier.get_content(),
+                                                                               value_expr_tree);
                 }
                 break;
+            }
+            case TokenKind::CLOSE_CURLY_BRACE: {
+                // scope end
+                take_token(); // eat the brace
+                scopes.pop(); // pop off the previous scope
             }
             default:
                 throw UnexpectedTokenException("The parser encountered an unexpected token");

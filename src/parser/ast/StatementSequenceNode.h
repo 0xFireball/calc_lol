@@ -24,8 +24,13 @@ public:
     const nodelist_t &get_sub_nodes() const { return subnodes; }
 
     template<class NodeType, class... ArgT>
-    void append_statement(ArgT &&... args) {
+    void append_new_statement(ArgT &&... args) {
         subnodes.push_back(std::make_unique<NodeType>(std::forward<ArgT>(args)...));
+    }
+
+    template<class NodeType>
+    void append_statement(NodeType &statement) {
+        subnodes.push_back(std::make_unique<NodeType>(statement));
     }
 
     virtual void emit_code(CodeEmitter &emitter) {}

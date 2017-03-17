@@ -10,6 +10,8 @@ public:
 
     }
 
+    virtual void emit_code(CodeEmitter &emitter) {}
+
 private:
     std::string type;
     std::string name;
