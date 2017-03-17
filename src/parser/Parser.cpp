@@ -82,7 +82,7 @@ std::shared_ptr<ProgramNode> Parser::parse_to_ast() {
                     // assignment operator
                     take_token(); // eat the assignment operator
                     // make sure the identifier is an existing symbol
-                    if (!symbol_table.count(identifier.get_content())) {
+                    if (!symbol_table.count(identifier.get_content()) || symbol_table[identifier.get_content()].get()->scope > scopes.size()) {
                         // the variable that they tried to assign did not exist
                         throw CompilationError("Could not resolve symbol: " + identifier.get_content());
                     }
