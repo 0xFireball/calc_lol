@@ -8,6 +8,8 @@
 #include "ast/VariableDeclarationNode.h"
 #include "ast/FunctionDeclarationNode.h"
 #include "ast/ReturnStatementNode.h"
+#include "ast/IfStatementNode.h"
+#include "ast/WhileLoopNode.h"
 
 Parser::Parser(std::vector<Token> tokens) : tokens(std::move(tokens)) {
 
@@ -106,16 +108,21 @@ std::shared_ptr<ProgramNode> Parser::parse_to_ast() {
                     // control keyword (eg. if, while, return)
                     std::string keyword_content = keyword.get_content();
                     // get expression
-                    std::vector<Token> valueExpression = read_until_statement_end();
-                    std::shared_ptr<ExpressionNode> value_expr_tree = ExpressionNode::create_from_tokens(
-                            valueExpression);
+                    std::vector<Token> res_expr = read_until_statement_end();
+                    std::shared_ptr<ExpressionNode> expr_tree = ExpressionNode::create_from_tokens(
+                            res_expr);
                     if (keyword_content == "return") {
-                        // TODO
-                        peek_scope()->append_new_statement<ReturnStatementNode>(value_expr_tree);
+                        peek_scope()->append_new_statement<ReturnStatementNode>(expr_tree);
                     } else if (keyword_content == "if") {
-                        // TODO
+                        std::shared_ptr<IfStatementNode> if_st = peek_scope()->append_new_statement<IfStatementNode>(
+                                expr_tree);
+                        // eat the opening brace
+                        read_expected_token(TokenKind::CURLY_BRACE);
                     } else if (keyword_content == "while") {
-                        // TODO
+                        std::shared_ptr<WhileLoopNode> if_st = peek_scope()->append_new_statement<WhileLoopNode>(
+                                expr_tree);
+                        // eat the opening brace
+                        read_expected_token(TokenKind::CURLY_BRACE);
                     }
                 }
                 break;
