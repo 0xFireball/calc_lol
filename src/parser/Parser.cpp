@@ -69,7 +69,7 @@ std::shared_ptr<ProgramNode> Parser::parse_to_ast() {
                                                                                                          SymbolKind::VARIABLE));
                     } else if (atGlobalScope && (lookahead.get_kind() == TokenKind::ROUND_BRACE)) {
                         // A function declaration
-                        std::shared_ptr<FunctionDeclarationNode> func = peek_scope()->append_new_statement(name_tok.get_content()); // add the function to the old scope...
+                        std::shared_ptr<FunctionDeclarationNode> func = peek_scope()->append_new_statement<FunctionDeclarationNode>(name_tok.get_content()); // add the function to the old scope...
                         scopes.push(func); // ..and set that as the new scope!
                         // TODO
                     }
