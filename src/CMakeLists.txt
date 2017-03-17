@@ -57,9 +57,8 @@ set(SOURCE_FILES
         emit/CodeEmitter.cpp
         emit/CodeEmitter.h
 
-        emit/Instruction.cpp
-        emit/Instruction.h
         emit/GenericInstruction.cpp
         emit/GenericInstruction.h
+)
 
 add_executable(CookieToastCompiler ${SOURCE_FILES})

@@ -1,6 +1,8 @@
 
 #pragma once
 
+#include <string>
+
 enum class InstructionOperation {
     LOAD_VAR,
     JUMP,
@@ -21,6 +23,6 @@ public:
 
 private:
     InstructionOperation operation;
-    string operand;
+    std::string operand;
 };
 
