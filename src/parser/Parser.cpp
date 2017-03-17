@@ -27,14 +27,13 @@ struct SymbolInformation {
 
     int scope;
     SymbolKind kind;
-
 };
 
 std::shared_ptr<ProgramNode> Parser::parse_to_ast() {
     auto programNodeInst = new ProgramNode(); // to keep a variable for debugging
     std::shared_ptr<ProgramNode> programNode(programNodeInst);
     scopes.push(programNode);
-    std::shared_ptr<std::map<std::string, SymbolInformation>> symbol_table(new std::map<std::string, SymbolInformation>());
+    std::map<std::string, std::shared_ptr<SymbolInformation>> symbol_table;
 
     while (!at_program_end()) {
         Token upcomingToken = peek_next_token();
@@ -48,7 +47,7 @@ std::shared_ptr<ProgramNode> Parser::parse_to_ast() {
                     // if in global scope, could be a function, otherwise a var declaration
 
                     std::string type = keyword.get_content();
-                    Token varName = read_expected_token(TokenKind::IDENTIFIER);
+                    Token var_name_tok = read_expected_token(TokenKind::IDENTIFIER);
                     Token lookahead = peek_next_token();
                     // if the lookahead is an assignment operator, a variable declaration
                     if ((lookahead.get_kind() == TokenKind::OPERATOR && lookahead.get_content() == "=") ||
@@ -59,11 +58,14 @@ std::shared_ptr<ProgramNode> Parser::parse_to_ast() {
                             std::vector<Token> valueExpression = read_until_statement_end();
                             std::shared_ptr<ExpressionNode> value_expr_tree = ExpressionNode::create_from_tokens(
                                     valueExpression);
-                            peek_scope()->append_statement<VariableDeclarationNode>(varName.get_content(),
+                            peek_scope()->append_statement<VariableDeclarationNode>(var_name_tok.get_content(),
                                                                                     value_expr_tree);
                         } else {
-                            peek_scope()->append_statement<VariableDeclarationNode>(varName.get_content());
+                            peek_scope()->append_statement<VariableDeclarationNode>(var_name_tok.get_content());
                         }
+                        // register symbol
+                        symbol_table[var_name_tok.get_content()] = std::shared_ptr<SymbolInformation>(new SymbolInformation((int)scopes.size(),
+                                                                                                         SymbolKind::VARIABLE));
                     } else if (atGlobalScope && (lookahead.get_kind() == TokenKind::ROUND_BRACE)) {
                         // A function declaration
                         // TODO
@@ -79,6 +81,11 @@ std::shared_ptr<ProgramNode> Parser::parse_to_ast() {
                 if (nextToken.get_kind() == TokenKind::OPERATOR && nextToken.get_content() == "=") {
                     // assignment operator
                     take_token(); // eat the assignment operator
+                    // make sure the identifier is an existing symbol
+                    if (!symbol_table.count(identifier.get_content())) {
+                        // the variable that they tried to assign did not exist
+                        throw CompilationError("Could not resolve symbol: " + identifier.get_content());
+                    }
                     std::vector<Token> valueExpression = read_until_statement_end();
                     std::shared_ptr<ExpressionNode> value_expr_tree = ExpressionNode::create_from_tokens(
                             valueExpression);
