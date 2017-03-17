@@ -21,6 +21,8 @@ int main(int argc, char *argv[]) {
         return -1;
     }
 
+    cout << "source file: " << argv[1] << endl;
+
     std::ifstream sourceFile(argv[1]);
 
     std::string source_code = "";

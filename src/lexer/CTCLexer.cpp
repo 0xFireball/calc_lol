@@ -24,6 +24,7 @@ std::vector<Token> CTCLexer::tokenize_source() {
         // ignore whitespace
         skip_character(CharType::WHITESPACE);
         char nextChar = peek_next_char();
+        if (!nextChar) break; // string termination character
         CharType nextCharType = peek_next_char_type();
         switch (nextCharType) {
             case CharType::ALPHA: //start of identifier
