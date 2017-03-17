@@ -8,7 +8,7 @@
 
 class ExpressionNode : public AstNode {
 public:
-    static std::shared_ptr<ExpressionNode> create_from_tokens(std::vector<Token> &tokens);
+    static std::unique_ptr<ExpressionNode> create_from_tokens(std::vector<Token> &tokens);
 
     virtual std::string to_string() const {
         throw std::runtime_error("not implemented in this class!");
