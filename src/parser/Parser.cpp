@@ -15,7 +15,7 @@ Parser::Parser(std::vector<Token> tokens) : tokens(std::move(tokens)) {
 
 }
 
-std::shared_ptr<StatementSequenceNode> Parser::peek_scope() {
+StatementSequenceNode* Parser::peek_scope() {
     return scopes.top();
 }
 
@@ -37,9 +37,9 @@ struct SymbolInformation {
 };
 
 std::shared_ptr<ProgramNode> Parser::parse_to_ast() {
-    auto programNodeInst = new ProgramNode(); // to keep a variable for debugging
-    std::shared_ptr<ProgramNode> programNode(programNodeInst);
-    scopes.push(programNode);
+    std::shared_ptr<ProgramNode> programNode = std::make_shared<ProgramNode>();
+    auto programNodeInst = programNode.get(); // to keep a variable for debugging
+    scopes.push(programNode.get());
     std::map<std::string, std::shared_ptr<SymbolInformation>> symbol_table;
 
     while (!at_program_end()) {
@@ -77,7 +77,7 @@ std::shared_ptr<ProgramNode> Parser::parse_to_ast() {
                                                       keyword_type));
                     } else if (atGlobalScope && (lookahead.get_kind() == TokenKind::ROUND_BRACE)) {
                         // A function declaration
-                        std::shared_ptr<FunctionDeclarationNode> func = peek_scope()->append_new_statement<FunctionDeclarationNode>(
+                        FunctionDeclarationNode* func = peek_scope()->append_new_statement<FunctionDeclarationNode>(
                                 name_tok.get_content(),
                                 keyword_type); // add the function to the old scope (with return type!)...
                         scopes.push(func); // ..and set that as the new scope!
@@ -109,18 +109,15 @@ std::shared_ptr<ProgramNode> Parser::parse_to_ast() {
                     std::string keyword_content = keyword.get_content();
                     // get expression
                     std::vector<Token> res_expr = read_until_statement_end();
-                    std::shared_ptr<ExpressionNode> expr_tree = ExpressionNode::create_from_tokens(
-                            res_expr);
+                    std::unique_ptr<ExpressionNode> expr_tree = ExpressionNode::create_from_tokens(res_expr);
                     if (keyword_content == "return") {
-                        peek_scope()->append_new_statement<ReturnStatementNode>(expr_tree);
+                        peek_scope()->append_new_statement<ReturnStatementNode>(std::move(expr_tree));
                     } else if (keyword_content == "if") {
-                        std::shared_ptr<IfStatementNode> if_st = peek_scope()->append_new_statement<IfStatementNode>(
-                                expr_tree);
+                        IfStatementNode* if_st = peek_scope()->append_new_statement<IfStatementNode>(std::move(expr_tree));
                         // eat the opening brace
                         read_expected_token(TokenKind::CURLY_BRACE);
                     } else if (keyword_content == "while") {
-                        std::shared_ptr<WhileLoopNode> while_st = peek_scope()->append_new_statement<WhileLoopNode>(
-                                expr_tree);
+                        WhileLoopNode* while_st = peek_scope()->append_new_statement<WhileLoopNode>(std::move(expr_tree));
                         // eat the opening brace
                         read_expected_token(TokenKind::CURLY_BRACE);
                     }
