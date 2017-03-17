@@ -17,4 +17,5 @@ std::string Preprocessor::preprocess_source() {
     std::regex comment_regex("^\\/\\/.*$");
     source = std::regex_replace(source, comment_regex, "");
 
+    return source;
 }

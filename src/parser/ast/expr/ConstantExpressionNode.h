@@ -14,6 +14,10 @@ public:
 
     virtual void emit_code(CodeEmitter &emitter) {}
 
+    std::string to_string() const {
+        return std::to_string(val);
+    }
+
 private:
     int val;
 };

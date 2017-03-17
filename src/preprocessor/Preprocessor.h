@@ -5,7 +5,7 @@
 
 class Preprocessor {
 public:
-    Preprocessor(std::string source_code) : source(source_code) {
+    Preprocessor(std::string source_code) : source(std::move(source_code)) {
 
     }
 

@@ -37,6 +37,7 @@ set(SOURCE_FILES
         parser/ast/expr/UnaryOperationNode.h
         parser/ast/expr/ConstantExpressionNode.h
         parser/ast/expr/ExpressionOperationType.h
+        parser/ast/expr/VariableExpressionNode.h
         parser/ast/VariableDeclarationNode.cpp
         parser/ast/VariableDeclarationNode.h
         parser/ast/FunctionDeclarationNode.cpp
@@ -53,5 +54,7 @@ set(SOURCE_FILES
         emit/CodeEmitter.cpp
         emit/CodeEmitter.h
 
-        preprocessor/Preprocessor.cpp preprocessor/Preprocessor.h)
+        preprocessor/Preprocessor.cpp
+        preprocessor/Preprocessor.h
+        )
 add_executable(CookieToastCompiler ${SOURCE_FILES})
