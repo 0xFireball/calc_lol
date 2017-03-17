@@ -76,7 +76,8 @@ std::shared_ptr<ProgramNode> Parser::parse_to_ast() {
     }
 
     scopes.pop();
-    return programNode;}
+    return programNode;
+}
 
 bool Parser::at_program_end() {
     return read_pos >= tokens.size();
