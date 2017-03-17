@@ -40,5 +40,7 @@ int main(int argc, char *argv[]) {
     Parser parser(tokens);
     std::shared_ptr<ProgramNode> program_ast = parser.parse_to_ast();
 
+    CodeEmitter emitter(InstructionSet::TI_Z80);
+
     return 0;
 }

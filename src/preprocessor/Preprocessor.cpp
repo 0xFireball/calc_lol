@@ -14,7 +14,10 @@ bool str_replace(std::string &str, const std::string &from, const std::string &t
 
 std::string Preprocessor::preprocess_source() {
     // replace coments
-    std::regex comment_regex("^\\/\\/.*$");
+    std::regex comment_regex("\\/\\/.*$");
     source = std::regex_replace(source, comment_regex, "");
 
+    // TODO: Includes
+
+    // TODO: apply ifdefs
 }
