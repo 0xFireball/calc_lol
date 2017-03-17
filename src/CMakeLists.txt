@@ -10,6 +10,9 @@ set(SOURCE_FILES
 
         util/bitmath.h
         util/NotImplementedException.h
+        
+        preprocessor/Preprocessor.cpp
+        preprocessor/Preprocessor.h
 
         lexer/CTCLexer.h
         lexer/CTCLexer.cpp
@@ -53,8 +56,6 @@ set(SOURCE_FILES
 
         emit/CodeEmitter.cpp
         emit/CodeEmitter.h
+)
 
-        preprocessor/Preprocessor.cpp
-        preprocessor/Preprocessor.h
-        )
 add_executable(CookieToastCompiler ${SOURCE_FILES})
