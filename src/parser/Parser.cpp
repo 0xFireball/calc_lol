@@ -119,7 +119,7 @@ std::shared_ptr<ProgramNode> Parser::parse_to_ast() {
                         // eat the opening brace
                         read_expected_token(TokenKind::CURLY_BRACE);
                     } else if (keyword_content == "while") {
-                        std::shared_ptr<WhileLoopNode> if_st = peek_scope()->append_new_statement<WhileLoopNode>(
+                        std::shared_ptr<WhileLoopNode> while_st = peek_scope()->append_new_statement<WhileLoopNode>(
                                 expr_tree);
                         // eat the opening brace
                         read_expected_token(TokenKind::CURLY_BRACE);
