@@ -151,6 +151,7 @@ std::shared_ptr<ProgramNode> Parser::parse_to_ast() {
                 // scope end
                 take_token(); // eat the brace
                 scopes.pop(); // pop off the previous scope
+                break;
             }
             default:
                 throw UnexpectedTokenException("The parser encountered an unexpected token");
