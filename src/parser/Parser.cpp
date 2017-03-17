@@ -71,7 +71,25 @@ std::shared_ptr<ProgramNode> Parser::parse_to_ast() {
                         // A function declaration
                         std::shared_ptr<FunctionDeclarationNode> func = peek_scope()->append_new_statement<FunctionDeclarationNode>(name_tok.get_content()); // add the function to the old scope...
                         scopes.push(func); // ..and set that as the new scope!
-                        // TODO
+                        take_token(); // eat open brace (lookahead)
+                        while (peek_next_token().get_kind() != TokenKind::CLOSE_ROUND_BRACE) {
+                            Token arg_type = read_expected_token(TokenKind::KEYWORD);
+                            if (!keyword_is_type_keyword(arg_type.get_content())) {
+                                throw ParseError("Expected type keyword.");
+                            }
+                            Token arg_name = read_expected_token(TokenKind::IDENTIFIER);
+                            // register parameter
+                            func->add_parameter(ParameterDeclarationNode(arg_type.get_content(), arg_name.get_content()));
+                            if (peek_next_token().get_kind() == TokenKind::ARG_SEP) {
+                                take_token(); // eat the arg separator and loop
+                            }
+                        }
+                        // eat the closing brace
+                        take_token();
+                        Token body_open = read_expected_token(TokenKind::CURLY_BRACE);
+                        // register symbol
+                        symbol_table[name_tok.get_content()] = std::shared_ptr<SymbolInformation>(new SymbolInformation((int)scopes.size(),
+                                                                                                                        SymbolKind::FUNCTION));
                     }
                 } else {
                     // control keyword
