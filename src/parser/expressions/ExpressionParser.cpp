@@ -11,18 +11,19 @@
 #include "../ast/expr/ConstantExpressionNode.h"
 
 static bool isLeftAssociative(std::string op) {
-    if (op=="+" || op=="-" ||
-        op=="*" || op=="/" || op=="%" ||
-        op=="&&" || op=="||") return true;
-    throw std::runtime_error("bad operator: "+op);
+    if (op == "+" || op == "-" ||
+        op == "*" || op == "/" || op == "%" ||
+        op == "&&" || op == "||")
+        return true;
+    throw std::runtime_error("bad operator: " + op);
 }
 
 static int precedence(std::string op) {
-    if (op=="+" || op=="-") return 1;
-    if (op=="*" || op=="/" || op=="%") return 2;
-    if (op=="&&") return 3;
-    if (op=="||") return 4;
-    throw std::runtime_error("bad operator: "+op);
+    if (op == "+" || op == "-") return 1;
+    if (op == "*" || op == "/" || op == "%") return 2;
+    if (op == "&&") return 3;
+    if (op == "||") return 4;
+    throw std::runtime_error("bad operator: " + op);
 }
 
 std::unique_ptr<ExpressionNode> ExpressionParser::parse(const std::vector<Token> &tokens) {

@@ -43,10 +43,15 @@ set(SOURCE_FILES
         parser/ast/FunctionDeclarationNode.h
         parser/ast/ParameterDeclarationNode.cpp
         parser/ast/ParameterDeclarationNode.h
+        parser/ast/ReturnStatementNode.cpp
+        parser/ast/ReturnStatementNode.h
+        parser/ast/IfStatementNode.cpp
+        parser/ast/IfStatementNode.h
+        parser/ast/WhileLoopNode.cpp
+        parser/ast/WhileLoopNode.h
 
         emit/CodeEmitter.cpp
         emit/CodeEmitter.h
 
-
-)
+        preprocessor/Preprocessor.cpp preprocessor/Preprocessor.h)
 add_executable(CookieToastCompiler ${SOURCE_FILES})

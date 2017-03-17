@@ -15,6 +15,16 @@ public:
     UnexpectedTokenException(std::string msg) : std::logic_error(msg) {};
 };
 
+class ParseError : public std::logic_error {
+public:
+    ParseError(std::string msg) : std::logic_error(msg) {};
+};
+
+class CompilationError : public std::logic_error {
+public:
+    CompilationError(std::string msg) : std::logic_error(msg) {};
+};
+
 class Parser {
 public:
     Parser(std::vector<Token> tokens);

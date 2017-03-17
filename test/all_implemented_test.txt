@@ -1,0 +1,30 @@
+
+// test function declaration and return
+
+int add(int a, int b) {
+    return a + b;
+}
+
+// test variables, assignment, and expressions
+
+int a = 1;
+int b = 2;
+int c = add(a, b);
+
+// test control structures
+
+// if
+if (c < 10) {
+    c = 12;
+}
+
+// while
+while (c < 20) {
+    c = c + 1;
+}
+
+
+
+
+
+
