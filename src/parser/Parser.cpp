@@ -91,8 +91,16 @@ std::shared_ptr<ProgramNode> Parser::parse_to_ast() {
                         symbol_table[name_tok.get_content()] = std::shared_ptr<SymbolInformation>(new SymbolInformation((int)scopes.size(),
                                                                                                                         SymbolKind::FUNCTION));
                     }
-                } else {
-                    // control keyword
+                } else if (!atGlobalScope) { // control keywords are not valid on the global scope
+                    // control keyword (eg. if, while, return)
+                    std::string keyword_content = keyword.get_content();
+                    if (keyword_content == "return") {
+                        // TODO
+                    } else if (keyword_content == "if") {
+                        // TODO
+                    } else if (keyword_content == "while") {
+                        // TODO
+                    }
                 }
                 break;
             }
