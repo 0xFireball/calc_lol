@@ -20,4 +20,5 @@ std::string Preprocessor::preprocess_source() {
     // TODO: Includes
 
     // TODO: apply ifdefs
+    return source;
 }

@@ -4,11 +4,15 @@
 #include <stack>
 
 #include <iostream>
+using std::cout;
+using std::cerr;
+using std::endl;
 
 #include "../../util/NotImplementedException.h"
 #include "../ast/expr/BinaryOperationNode.h"
 #include "../ast/expr/UnaryOperationNode.h"
 #include "../ast/expr/ConstantExpressionNode.h"
+#include "../ast/expr/VariableExpressionNode.h"
 
 static bool isLeftAssociative(std::string op) {
     if (op == "+" || op == "-" ||
@@ -27,6 +31,8 @@ static int precedence(std::string op) {
 }
 
 std::unique_ptr<ExpressionNode> ExpressionParser::parse(const std::vector<Token> &tokens) {
+    if (tokens.size() == 0) return nullptr;
+
     /// convert to postfix form
     std::queue<Token> postfixQueue;
     std::stack<Token> opStack;
@@ -86,9 +92,17 @@ std::unique_ptr<ExpressionNode> ExpressionParser::parse(const std::vector<Token>
         postfixQueue.pop();
         if (tok.get_kind() == TokenKind::NUMBER_LITERAL) {
             exprStack.push(std::make_unique<ConstantExpressionNode>(std::stoi(tok.get_content())));
-        } // TODO
+        } else if (tok.get_kind() == TokenKind::IDENTIFIER) {
+            exprStack.push(std::make_unique<VariableExpressionNode>(tok.get_content()));
+        } else if (tok.get_kind() == TokenKind::OPERATOR) {
+            ExpressionOperationType opType = getOpType(tok.get_content());
+            auto opB = std::move(exprStack.top()); exprStack.pop();
+            auto opA = std::move(exprStack.top()); exprStack.pop();
+            exprStack.push(std::make_unique<BinaryOperationNode>(opType, std::move(opA), std::move(opB)));
+        }
     }
 
     if (exprStack.size() != 1) throw std::runtime_error("bad expression");
+    cout << exprStack.top()->to_string() << endl;
     return std::move(exprStack.top());
 }
