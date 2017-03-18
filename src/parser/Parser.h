@@ -46,9 +46,12 @@ struct SymbolInformation {
 using symbolmap_t = std::map<std::string, std::shared_ptr<SymbolInformation>>;
 
 struct ScopeInformation {
-    ScopeInformation(StatementSequenceNode *statement_sequence) : statements(statement_sequence) {
+    ScopeInformation(ScopeInformation *parent_scope_info, StatementSequenceNode *statement_sequence)
+            : statements(statement_sequence), parent_scope(parent_scope_info) {
 
     }
+
+    ScopeInformation *parent_scope;
 
     StatementSequenceNode *statements;
     symbolmap_t symbol_map;
@@ -60,12 +63,16 @@ public:
 
     std::shared_ptr<ProgramNode> parse_to_ast();
 
+    std::shared_ptr<SymbolInformation> resolve_symbol(std::string identifier);
+
 protected:
     StatementSequenceNode *peek_scope_statements();
 
-    ScopeInformation peek_scope_info();
+    ScopeInformation *peek_scope_info();
 
     bool symbol_exists(std::string identifier, SymbolKind kind);
+
+    std::shared_ptr<SymbolInformation> resolve_symbol_in_scope(std::string identifier, ScopeInformation* scope_info);
 
     bool at_program_end();
 
