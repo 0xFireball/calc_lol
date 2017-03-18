@@ -13,7 +13,7 @@ public:
 
     }
 
-    virtual void emit_code(CodeEmitter &emitter) {}
+    virtual void emit_code(CodeEmitter &emitter);
 
 private:
     std::unique_ptr<ExpressionNode> expr;

@@ -7,16 +7,19 @@ enum class InstructionOperation {
     LOAD_VAR,
     JUMP,
     CALL_FUNC,
+    RET,
     ADD,
     SUBTRACT,
     XOR,
     OR,
-    AND
+    AND,
+    PUSH,
+    POP
 };
 
 class GenericInstruction {
 public:
-    GenericInstruction(InstructionOperation instr_operation, std::string instr_operand) : operation(instr_operation),
+    GenericInstruction(InstructionOperation instr_operation, std::string instr_operand = "") : operation(instr_operation),
                                                                                           operand(instr_operand) {
 
     }
