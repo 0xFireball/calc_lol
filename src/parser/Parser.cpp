@@ -13,8 +13,8 @@ Parser::Parser(std::vector<Token> tokens) : tokens(std::move(tokens)) {
 
 }
 
-std::shared_ptr<ProgramNode> Parser::parse_to_ast() {
-    std::shared_ptr<ProgramNode> programNode = std::make_shared<ProgramNode>();
+std::unique_ptr<ProgramNode> Parser::parse_to_ast() {
+    std::unique_ptr<ProgramNode> programNode = std::make_unique<ProgramNode>();
     auto programNodeInst = programNode.get(); // to keep a variable for debugging
     scopes.push(ScopeInformation(nullptr, programNode.get()));
     std::stack<symbolmap_t> symbol_map_stack;
@@ -40,11 +40,11 @@ std::shared_ptr<ProgramNode> Parser::parse_to_ast() {
                             // eat the assignment operator
                             take_token();
                             std::vector<Token> valueExpression = read_until_statement_end();
-                            std::shared_ptr<ExpressionNode> value_expr_tree = ExpressionNode::create_from_tokens(
+                            std::unique_ptr<ExpressionNode> value_expr_tree = ExpressionNode::create_from_tokens(
                                     valueExpression);
                             peek_scope_statements()->append_new_statement<VariableDeclarationNode>(
                                     name_tok.get_content(),
-                                    value_expr_tree);
+                                    std::move(value_expr_tree));
                         } else {
                             peek_scope_statements()->append_new_statement<VariableDeclarationNode>(
                                     name_tok.get_content());

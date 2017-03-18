@@ -4,7 +4,6 @@
 #include <stdexcept>
 
 #include "CTCLexer.h"
-#include "Token.h"
 
 CTCLexer::CTCLexer(std::string source) : source_code(source) {
 
@@ -70,8 +69,8 @@ std::vector<Token> CTCLexer::tokenize_source() {
                     case '{':
                         braceTokenKind = TokenKind::CURLY_BRACE;
                         break;
-                    default:
-                        // WTF?
+                    default: // WTF?
+                        braceTokenKind = TokenKind::INVALID;
                         break;
                 }
                 tokens.push_back(Token(braceTokenKind, std::string(1, c)));
@@ -91,9 +90,8 @@ std::vector<Token> CTCLexer::tokenize_source() {
                     case '}':
                         braceTokenKind = TokenKind::CLOSE_CURLY_BRACE;
                         break;
-                    default:
-                        // WTF? might as well divide by zero.
-                        int x = 1 / 0;
+                    default: // WTF?
+                        braceTokenKind = TokenKind::INVALID;
                         break;
                 }
                 tokens.push_back(Token(braceTokenKind, std::string(1, c)));

@@ -61,7 +61,7 @@ class Parser {
 public:
     Parser(std::vector<Token> tokens);
 
-    std::shared_ptr<ProgramNode> parse_to_ast();
+    std::unique_ptr<ProgramNode> parse_to_ast();
 
     std::shared_ptr<SymbolInformation> resolve_symbol(std::string identifier);
 
