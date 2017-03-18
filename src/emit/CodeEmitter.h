@@ -1,6 +1,10 @@
 
 #pragma once
 
+#include <memory>
+
+class ProgramNode;
+
 enum class InstructionSet {
     PLATFORM_AGNOSTIC,
     TI_Z80
@@ -8,9 +12,11 @@ enum class InstructionSet {
 
 class CodeEmitter {
 public:
-    CodeEmitter(InstructionSet instruction_set) : instr_set(instruction_set) {
+    CodeEmitter(InstructionSet instruction_set, std::shared_ptr <ProgramNode> syntax_tree) : instr_set(instruction_set),
+                                                                                             ast(syntax_tree) {
     }
 
 private:
     InstructionSet instr_set;
+    std::shared_ptr <ProgramNode> ast;
 };

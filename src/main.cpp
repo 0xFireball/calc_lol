@@ -46,7 +46,7 @@ int main(int argc, char *argv[]) {
     PreOptimizer pre_optimizer(program_ast);
     pre_optimizer.optimize_syntax_tree();
 
-    CodeEmitter emitter(InstructionSet::TI_Z80);
+    CodeEmitter emitter(InstructionSet::TI_Z80, program_ast);
 
     return 0;
 }
