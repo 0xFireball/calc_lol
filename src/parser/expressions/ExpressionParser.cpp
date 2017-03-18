@@ -14,12 +14,12 @@ using std::endl;
 #include "../ast/expr/ConstantExpressionNode.h"
 #include "../ast/expr/VariableExpressionNode.h"
 
-static bool isLeftAssociative(std::string op) {
+static bool is_left_associative(std::string op) {
     if (op == "+" || op == "-" ||
         op == "*" || op == "/" || op == "%" ||
         op == "&&" || op == "||")
         return true;
-    throw std::runtime_error("bad operator: " + op);
+    throw std::runtime_error("unrecognized operator: " + op);
 }
 
 static int precedence(std::string op) {
@@ -27,7 +27,7 @@ static int precedence(std::string op) {
     if (op == "*" || op == "/" || op == "%") return 2;
     if (op == "&&") return 3;
     if (op == "||") return 4;
-    throw std::runtime_error("bad operator: " + op);
+    throw std::runtime_error("unrecognized operator: " + op);
 }
 
 std::unique_ptr<ExpressionNode> ExpressionParser::parse(const std::vector<Token> &tokens) {
@@ -51,7 +51,7 @@ std::unique_ptr<ExpressionNode> ExpressionParser::parse(const std::vector<Token>
                 }
                 break;
             case TokenKind::OPERATOR: {
-                bool leftAssoc = isLeftAssociative(tok.get_content());
+                bool leftAssoc = is_left_associative(tok.get_content());
                 int prec = precedence(tok.get_content());
                 Token o2;
                 while (opStack.size()>0 && (o2 = opStack.top()).get_kind() == TokenKind::OPERATOR &&
@@ -95,10 +95,10 @@ std::unique_ptr<ExpressionNode> ExpressionParser::parse(const std::vector<Token>
         } else if (tok.get_kind() == TokenKind::IDENTIFIER) {
             exprStack.push(std::make_unique<VariableExpressionNode>(tok.get_content()));
         } else if (tok.get_kind() == TokenKind::OPERATOR) {
-            ExpressionOperationType opType = getOpType(tok.get_content());
+            ExpressionOperationType op_type = get_operation_type(tok.get_content());
             auto opB = std::move(exprStack.top()); exprStack.pop();
             auto opA = std::move(exprStack.top()); exprStack.pop();
-            exprStack.push(std::make_unique<BinaryOperationNode>(opType, std::move(opA), std::move(opB)));
+            exprStack.push(std::make_unique<BinaryOperationNode>(op_type, std::move(opA), std::move(opB)));
         }
     }
 

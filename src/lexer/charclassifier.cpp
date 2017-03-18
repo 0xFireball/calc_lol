@@ -12,6 +12,8 @@ CharType classify_char(char c) {
         case '&':
         case '|':
         case '=':
+        case '<':
+        case '>':
             return CharType::OPERATOR;
         case '(':
         case '[':

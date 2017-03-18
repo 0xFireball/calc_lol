@@ -1,0 +1,5 @@
+
+int a = 0;
+int b = a < 0;
+int c = b == 1;
+int d = c << a;

@@ -7,6 +7,7 @@
 #include "lexer/CTCLexer.h"
 #include "parser/Parser.h"
 #include "preprocessor/Preprocessor.h"
+#include "optimizer/PreOptimizer.h"
 
 using std::cout;
 using std::cerr;
@@ -20,6 +21,8 @@ int main(int argc, char *argv[]) {
         cout << "Usage: ctc <source file>" << endl;
         return -1;
     }
+
+    cout << "source file: " << argv[1] << endl;
 
     std::ifstream sourceFile(argv[1]);
 
@@ -40,7 +43,10 @@ int main(int argc, char *argv[]) {
     Parser parser(tokens);
     std::shared_ptr<ProgramNode> program_ast = parser.parse_to_ast();
 
-    CodeEmitter emitter(InstructionSet::TI_Z80);
+    PreOptimizer pre_optimizer(program_ast);
+    pre_optimizer.optimize_syntax_tree();
+
+    CodeEmitter emitter(InstructionSet::TI_Z80, program_ast);
 
     return 0;
 }
