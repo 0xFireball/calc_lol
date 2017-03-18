@@ -4,6 +4,7 @@
 #include <stack>
 
 #include <iostream>
+
 using std::cout;
 using std::cerr;
 using std::endl;
@@ -13,6 +14,7 @@ using std::endl;
 #include "../ast/expr/UnaryOperationNode.h"
 #include "../ast/expr/ConstantExpressionNode.h"
 #include "../ast/expr/VariableExpressionNode.h"
+#include "../Parser.h"
 
 static bool is_left_associative(std::string op) {
     if (op == "+" || op == "-" ||
@@ -30,19 +32,19 @@ static int precedence(std::string op) {
     throw std::runtime_error("unrecognized operator: " + op);
 }
 
-std::unique_ptr<ExpressionNode> ExpressionParser::parse(const std::vector<Token> &tokens) {
+std::unique_ptr<ExpressionNode> ExpressionParser::parse(const std::vector<Token> &tokens, Parser *parser) {
     if (tokens.size() == 0) return nullptr;
 
     /// convert to postfix form
     std::queue<Token> postfixQueue;
     std::stack<Token> opStack;
-    for (const Token& tok : tokens) {
+    for (const Token &tok : tokens) {
         switch (tok.get_kind()) {
             case TokenKind::NUMBER_LITERAL:
             case TokenKind::IDENTIFIER:
                 postfixQueue.push(tok);
                 break;
-            /* TODO: function token: push onto opStack */
+                /* TODO: function token: push onto opStack */
             case TokenKind::ARG_SEP:
                 // TODO: handle not encountering a parenthesis (syntax error)
                 while (opStack.top().get_kind() != TokenKind::ROUND_BRACE) {
@@ -54,7 +56,7 @@ std::unique_ptr<ExpressionNode> ExpressionParser::parse(const std::vector<Token>
                 bool leftAssoc = is_left_associative(tok.get_content());
                 int prec = precedence(tok.get_content());
                 Token o2;
-                while (opStack.size()>0 && (o2 = opStack.top()).get_kind() == TokenKind::OPERATOR &&
+                while (opStack.size() > 0 && (o2 = opStack.top()).get_kind() == TokenKind::OPERATOR &&
                        (leftAssoc ? prec <= precedence(o2.get_content()) : prec < precedence(o2.get_content()))) {
                     postfixQueue.push(o2);
                     opStack.pop();
@@ -75,7 +77,7 @@ std::unique_ptr<ExpressionNode> ExpressionParser::parse(const std::vector<Token>
                 // TODO: if opStack.top() is a function token, pop it onto the output queue
                 break;
             default:
-                throw std::runtime_error("bad token in expression: "+tok.get_content());
+                throw std::runtime_error("bad token in expression: " + tok.get_content());
         }
     }
     while (opStack.size() > 0) {
@@ -96,8 +98,10 @@ std::unique_ptr<ExpressionNode> ExpressionParser::parse(const std::vector<Token>
             exprStack.push(std::make_unique<VariableExpressionNode>(tok.get_content()));
         } else if (tok.get_kind() == TokenKind::OPERATOR) {
             ExpressionOperationType op_type = get_operation_type(tok.get_content());
-            auto opB = std::move(exprStack.top()); exprStack.pop();
-            auto opA = std::move(exprStack.top()); exprStack.pop();
+            auto opB = std::move(exprStack.top());
+            exprStack.pop();
+            auto opA = std::move(exprStack.top());
+            exprStack.pop();
             exprStack.push(std::make_unique<BinaryOperationNode>(op_type, std::move(opA), std::move(opB)));
         }
     }

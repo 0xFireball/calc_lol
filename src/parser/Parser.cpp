@@ -41,7 +41,7 @@ std::unique_ptr<ProgramNode> Parser::parse_to_ast() {
                             take_token();
                             std::vector<Token> valueExpression = read_until_statement_end();
                             std::unique_ptr<ExpressionNode> value_expr_tree = ExpressionNode::create_from_tokens(
-                                    valueExpression);
+                                    valueExpression, this);
                             peek_scope_statements()->append_new_statement<VariableDeclarationNode>(
                                     name_tok.get_content(),
                                     std::move(value_expr_tree));
@@ -88,7 +88,7 @@ std::unique_ptr<ProgramNode> Parser::parse_to_ast() {
                     std::string keyword_content = keyword.get_content();
                     // get expression
                     std::vector<Token> res_expr = read_until_statement_end();
-                    std::unique_ptr<ExpressionNode> expr_tree = ExpressionNode::create_from_tokens(res_expr);
+                    std::unique_ptr<ExpressionNode> expr_tree = ExpressionNode::create_from_tokens(res_expr, this);
                     if (keyword_content == "return") {
                         peek_scope_statements()->append_new_statement<ReturnStatementNode>(std::move(expr_tree));
                     } else if (keyword_content == "if") {
@@ -118,7 +118,7 @@ std::unique_ptr<ProgramNode> Parser::parse_to_ast() {
                     }
                     std::vector<Token> valueExpression = read_until_statement_end();
                     std::shared_ptr<ExpressionNode> value_expr_tree = ExpressionNode::create_from_tokens(
-                            valueExpression);
+                            valueExpression, this);
                     peek_scope_statements()->append_new_statement<VariableAssignmentNode>(identifier.get_content(),
                                                                                           value_expr_tree);
                 }
