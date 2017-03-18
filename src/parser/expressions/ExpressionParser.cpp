@@ -95,7 +95,7 @@ std::unique_ptr<ExpressionNode> ExpressionParser::parse(const std::vector<Token>
         } else if (tok.get_kind() == TokenKind::IDENTIFIER) {
             exprStack.push(std::make_unique<VariableExpressionNode>(tok.get_content()));
         } else if (tok.get_kind() == TokenKind::OPERATOR) {
-            ExpressionOperationType opType = getOpType(tok.get_content());
+            ExpressionOperationType opType = get_operation_type(tok.get_content());
             auto opB = std::move(exprStack.top()); exprStack.pop();
             auto opA = std::move(exprStack.top()); exprStack.pop();
             exprStack.push(std::make_unique<BinaryOperationNode>(opType, std::move(opA), std::move(opB)));
