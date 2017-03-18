@@ -62,7 +62,10 @@ public:
 
 protected:
     StatementSequenceNode *peek_scope_statements();
+
     ScopeInformation peek_scope_info();
+
+    bool symbol_exists(std::string identifier, SymbolKind kind);
 
     bool at_program_end();
 

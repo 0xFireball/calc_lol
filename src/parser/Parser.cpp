@@ -112,8 +112,7 @@ std::shared_ptr<ProgramNode> Parser::parse_to_ast() {
                     // assignment operator
                     take_token(); // eat the assignment operator
                     // make sure the identifier is an existing symbol
-                    if (!peek_scope_info().symbol_map.count(identifier.get_content()) ||
-                        peek_scope_info().symbol_map[identifier.get_content()].get()->scope > scopes.size()) {
+                    if (symbol_exists(identifier.get_content(), SymbolKind::VARIABLE)) {
                         // the variable that they tried to assign did not exist
                         throw CompilationError("Could not resolve symbol: " + identifier.get_content());
                     }
@@ -203,4 +202,25 @@ std::vector<Token> Parser::read_token_sequence(std::vector<TokenKind> expectedTo
 
 std::vector<Token> Parser::read_until_statement_end() {
     return read_until_token(TokenKind::STMT_SEP, true);
+}
+
+bool Parser::symbol_exists(std::string identifier, SymbolKind kind) {
+    std::stack<ScopeInformation> tmp_scopes;
+    std::shared_ptr<SymbolInformation> found_info(nullptr);
+    while (!scopes.empty()) {
+        ScopeInformation scope_inf = scopes.top();
+        if (scope_inf.symbol_map.count(identifier)) {
+            found_info = scope_inf.symbol_map[identifier];
+            break; // identifier was found
+        }
+        tmp_scopes.push(scope_inf);
+        scopes.pop();
+    }
+    // reassemble
+    while (!tmp_scopes.empty()) {
+        scopes.push(tmp_scopes.top());
+        tmp_scopes.pop();
+    }
+    if (found_info == nullptr) return false;
+    return found_info->kind == kind;
 }
