@@ -27,7 +27,7 @@ std::vector<Token> CTCLexer::tokenize_source() {
         if (!nextChar) break; // string termination character
         CharType nextCharType = peek_next_char_type();
         switch (nextCharType) {
-            case CharType::ALPHA: //start of identifier
+            case CharType::ALPHA: // start of identifier
                 read_tokens(working, CharType::ALPHANUMERIC);
                 if (identifier_is_keyword(working))
                     tokens.push_back(Token(TokenKind::KEYWORD, working));
@@ -37,21 +37,21 @@ std::vector<Token> CTCLexer::tokenize_source() {
                 break;
 
             case CharType::STRING_DELIM:
-                take_next_char(); //Skip the opening quote
+                take_next_char(); // Skip the opening quote
                 read_tokens_until(working, CharType::STRING_DELIM);
-                take_next_char(); //Skip the ending quote
+                take_next_char(); // Skip the ending quote
                 tokens.push_back(Token(TokenKind::STRING_LITERAL, working));
                 working.clear();
                 break;
 
-            case CharType::NUMERIC: //start of number literal, allow for decimal numbers too
+            case CharType::NUMERIC: // start of number literal, allow for decimal numbers too
                 read_tokens(working, CharType::DECIMALNUMERIC);
                 tokens.push_back(Token(TokenKind::NUMBER_LITERAL, working));
                 working.clear();
                 break;
 
             case CharType::OPERATOR:
-                //It is an operator
+                // It is an operator
                 read_tokens(working, CharType::OPERATOR);
                 tokens.push_back(Token(TokenKind::OPERATOR, working));
                 working.clear();
@@ -92,7 +92,8 @@ std::vector<Token> CTCLexer::tokenize_source() {
                         braceTokenKind = TokenKind::CLOSE_CURLY_BRACE;
                         break;
                     default:
-                        // WTF?
+                        // WTF? might as well divide by zero.
+                        int x = 1 / 0;
                         break;
                 }
                 tokens.push_back(Token(braceTokenKind, std::string(1, c)));
