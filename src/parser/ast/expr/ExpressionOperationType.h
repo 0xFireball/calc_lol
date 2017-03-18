@@ -7,7 +7,7 @@ enum class ExpressionOperationType {
     DIVIDE,
     MODULO,
     ASSIGNMENT,
-    EQUALS,
+    EQUALITY,
     GREATER_THAN,
     LESS_THAN,
     GREATER_EQUALS,
@@ -32,5 +32,16 @@ static ExpressionOperationType get_operation_type(std::string op) {
     if (op == "%") return Type::MODULO;
     if (op == "&&") return Type::AND;
     if (op == "||") return Type::OR;
+    if (op == "=") return Type::ASSIGNMENT;
+    if (op == "==") return Type::EQUALITY;
+    if (op == ">") return Type::GREATER_THAN;
+    if (op == "<") return Type::LESS_THAN;
+    if (op == ">=") return Type::GREATER_EQUALS;
+    if (op == "<=") return Type::LESS_EQUALS;
+    if (op == "!") return Type::NOT;
+    if (op == "!=") return Type::NOT_EQUALS;
+    if (op == "^") return Type::XOR;
+    if (op == "~") return Type::NEGATE;
+    
     throw std::runtime_error("unrecognized operator: " + op);
 }
