@@ -117,10 +117,10 @@ std::unique_ptr<ProgramNode> Parser::parse_to_ast() {
                         throw CompilationError("Could not resolve symbol: " + identifier.get_content());
                     }
                     std::vector<Token> valueExpression = read_until_statement_end();
-                    std::shared_ptr<ExpressionNode> value_expr_tree = ExpressionNode::create_from_tokens(
+                    std::unique_ptr<ExpressionNode> value_expr_tree = ExpressionNode::create_from_tokens(
                             valueExpression);
                     peek_scope_statements()->append_new_statement<VariableAssignmentNode>(identifier.get_content(),
-                                                                                          value_expr_tree);
+                                                                                          std::move(value_expr_tree));
                 }
                 break;
             }

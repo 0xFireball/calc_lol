@@ -7,13 +7,13 @@
 
 class VariableAssignmentNode : public AstNode {
 public:
-    VariableAssignmentNode(std::string variable_name, std::shared_ptr<ExpressionNode> expression) : var_name(variable_name),
-                                                                                    expr(expression) {
+    VariableAssignmentNode(std::string variable_name, std::unique_ptr<ExpressionNode> expression) : var_name(variable_name),
+                                                                                    expr(std::move(expression)) {
     }
     
     virtual void emit_code(CodeEmitter& emitter) {}
 
 private:
     std::string var_name;
-    std::shared_ptr<ExpressionNode> expr;
+    std::unique_ptr<ExpressionNode> expr;
 };
