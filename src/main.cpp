@@ -43,7 +43,7 @@ int main(int argc, char *argv[]) {
     Parser parser(tokens);
     std::shared_ptr<ProgramNode> program_ast = parser.parse_to_ast();
 
-    PreOptimizer pre_optimizer(program_ast);
+    PreOptimizer pre_optimizer(program_ast.get());
     pre_optimizer.optimize_syntax_tree();
 
     CodeEmitter emitter(InstructionSet::TI_Z80, program_ast);
