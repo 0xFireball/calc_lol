@@ -15,6 +15,10 @@ public:
 
     virtual void emit_code(CodeEmitter& emitter) {}
 
+    bool is_constant() const override {
+        return false; // no constexpr function calls for now
+    }
+
     std::string to_string() const {
         std::string str = funcName + '(';
         for (size_t i = 0; i < arguments.size(); i++) {

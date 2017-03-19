@@ -10,9 +10,14 @@ public:
 
     }
 
-    int get_constant_value() const { return val; }
-
     virtual void emit_code(CodeEmitter &emitter) {}
+
+    bool is_constant() const override {
+        return true;
+    }
+    int get_constant_value() const override {
+        return val;
+    }
 
     std::string to_string() const {
         return std::to_string(val);

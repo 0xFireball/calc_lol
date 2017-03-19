@@ -16,6 +16,10 @@ public:
 
     virtual void emit_code(CodeEmitter& emitter) {}
 
+    bool is_constant() const override {
+        return false;
+    }
+
     std::string to_string() const {
         return varName;
     }

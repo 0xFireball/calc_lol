@@ -16,6 +16,15 @@ public:
 
     ExpressionNode* get_operand() const { return opA.get(); }
 
+    bool is_constant() const override {
+        return opA->is_constant();
+    }
+    int get_constant_value() const override {
+        if (exprType == ExpressionOperationType::NEGATE)
+            return -opA->get_constant_value();
+        throw std::runtime_error("Bad unary operator");
+    }
+
     virtual void emit_code(CodeEmitter& emitter) {}
 
 private:

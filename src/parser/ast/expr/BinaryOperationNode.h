@@ -25,6 +25,13 @@ public:
     ExpressionNode* get_op_A() const { return opA.get(); }
     ExpressionNode* get_op_B() const { return opB.get(); }
 
+    bool is_constant() const override {
+        return opA->is_constant() && opB->is_constant();
+    }
+    int get_constant_value() const override {
+        return perform_op(exprType, opA->get_constant_value(), opB->get_constant_value());
+    }
+
     virtual void emit_code(CodeEmitter& emitter) {}
 
     std::string to_string() const {
