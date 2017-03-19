@@ -8,6 +8,7 @@
 #include "parser/Parser.h"
 #include "preprocessor/Preprocessor.h"
 #include "optimizer/PreOptimizer.h"
+#include "emit/SyntaxTreeLinearizer.h"
 
 using std::cout;
 using std::cerr;
@@ -28,8 +29,7 @@ int main(int argc, char *argv[]) {
 
     std::string source_code = "";
     std::string l;
-    while (std::getline(sourceFile, l))
-    {
+    while (std::getline(sourceFile, l)) {
         source_code += l;
         source_code += '\n';
     }
@@ -47,6 +47,7 @@ int main(int argc, char *argv[]) {
     pre_optimizer.optimize_syntax_tree();
 
     CodeEmitter emitter(InstructionSet::TI_Z80, program_ast);
+    SyntaxTreeLinearizer linearizer(&emitter);
 
     return 0;
 }

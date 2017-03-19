@@ -1,7 +1,6 @@
 
 #pragma once
 
-#include "../util/bitmath.h"
 
 enum class CharType {
     ALPHA = 1 << 0,
@@ -19,6 +18,7 @@ enum class CharType {
     UNKNOWN = 1 << 31,
 
     // Compound
+
     ALPHANUMERIC = (1 << 1) | (1 << 0), // alpha and numeric
     DECIMALNUMERIC = (1 << 1) | (1 << 9), // numeric and member access
     WHITESPACE = (1 << 2) | (1 << 3), // Inline whitespace or newline
