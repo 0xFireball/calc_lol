@@ -6,9 +6,6 @@
 
 class ReturnStatementNode : public AstNode {
 public:
-    ReturnStatementNode(ExpressionNode* expression) : expr(expression) {
-
-    }
     ReturnStatementNode(std::unique_ptr<ExpressionNode>&& expression) : expr(std::move(expression)) {
 
     }

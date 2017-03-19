@@ -6,7 +6,7 @@
 
 class WhileLoopNode : public StatementSequenceNode {
 public:
-    WhileLoopNode(std::unique_ptr<ExpressionNode> expression) : expr(std::move(expression)) {
+    WhileLoopNode(std::unique_ptr<ExpressionNode>&& expression) : expr(std::move(expression)) {
     }
 
     virtual void emit_code(CodeEmitter &emitter) {}
