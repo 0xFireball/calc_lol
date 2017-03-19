@@ -207,9 +207,11 @@ std::vector<Token> Parser::read_until_statement_end() {
 std::shared_ptr<SymbolInformation>
 Parser::resolve_symbol_in_scope(std::string identifier, ScopeInformation *scope_info) {
     if (scope_info == nullptr) return nullptr;
-    if (scope_info->symbol_map.count(identifier) == 0)
+
+    auto iter = scope_info->symbol_map.find(identifier);
+    if (iter == scope_info->symbol_map.end())
         return resolve_symbol_in_scope(identifier, scope_info->parent_scope);
-    return scope_info->symbol_map[identifier];
+    return iter->second;
 }
 
 bool Parser::symbol_exists(std::string identifier, SymbolKind kind) {
