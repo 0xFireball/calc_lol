@@ -8,6 +8,7 @@ set(CMAKE_CXX_STANDARD 14)
 set(SOURCE_FILES
         main.cpp
 
+        util/container_util.h
         util/NotImplementedException.h
         
         preprocessor/Preprocessor.cpp
@@ -40,6 +41,7 @@ set(SOURCE_FILES
         parser/ast/expr/ConstantExpressionNode.h
         parser/ast/expr/ExpressionOperationType.h
         parser/ast/expr/VariableExpressionNode.h
+        parser/ast/expr/FunctionCallNode.h
         parser/ast/VariableDeclarationNode.cpp
         parser/ast/VariableDeclarationNode.h
         parser/ast/FunctionDeclarationNode.cpp
@@ -57,9 +59,14 @@ set(SOURCE_FILES
         emit/CodeEmitter.h
         emit/GenericInstruction.cpp
         emit/GenericInstruction.h
+        emit/SyntaxTreeLinearizer.cpp
+        emit/SyntaxTreeLinearizer.h
+        emit/tai/ThreeAddressInstruction.cpp
+        emit/tai/ThreeAddressInstruction.h
+        emit/tai/TAISequence.cpp
+        emit/tai/TAISequence.h
 
         optimizer/PreOptimizer.cpp
-        optimizer/PreOptimizer.h
-        parser/ast/expr/FunctionCallNode.h emit/SyntaxTreeLinearizer.cpp emit/SyntaxTreeLinearizer.h emit/tai/ThreeAddressInstruction.cpp emit/tai/ThreeAddressInstruction.h emit/tai/TAISequence.cpp emit/tai/TAISequence.h)
+        optimizer/PreOptimizer.h)
 
 add_executable(CookieToastCompiler ${SOURCE_FILES})

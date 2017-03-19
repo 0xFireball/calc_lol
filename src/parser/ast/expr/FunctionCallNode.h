@@ -8,9 +8,9 @@
 
 class FunctionCallNode: public ExpressionNode {
 public:
-    using paramlist_t = std::vector<std::unique_ptr<ExpressionNode>>;
+    using arglist_t = std::vector<std::unique_ptr<ExpressionNode>>;
 
-    FunctionCallNode(std::string function, paramlist_t&& args):funcName(function), arguments(std::move(args)) {
+    FunctionCallNode(std::string function, arglist_t&& args):funcName(function), arguments(std::move(args)) {
     }
 
     virtual void emit_code(CodeEmitter& emitter) {}
@@ -27,5 +27,5 @@ public:
 
 private:
     std::string funcName;
-    paramlist_t arguments;
+    arglist_t arguments;
 };
