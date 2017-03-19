@@ -61,6 +61,6 @@ set(SOURCE_FILES
 
         optimizer/PreOptimizer.cpp
         optimizer/PreOptimizer.h
-        parser/ast/expr/FunctionCallNode.h parser/SyntaxTreeLinearizer.cpp parser/SyntaxTreeLinearizer.h parser/tai/ThreeAddressInstruction.cpp parser/tai/ThreeAddressInstruction.h parser/tai/TAIProgram.cpp parser/tai/TAIProgram.h)
+        parser/ast/expr/FunctionCallNode.h emit/SyntaxTreeLinearizer.cpp emit/SyntaxTreeLinearizer.h emit/tai/ThreeAddressInstruction.cpp emit/tai/ThreeAddressInstruction.h emit/tai/TAISequence.cpp emit/tai/TAISequence.h)
 
 add_executable(CookieToastCompiler ${SOURCE_FILES})
