@@ -112,8 +112,10 @@ std::unique_ptr<ExpressionNode> ExpressionParser::parse(const std::vector<Token>
     std::stack<std::unique_ptr<ExpressionNode>> exprStack;
     while (postfixQueue.size() > 0) {
         Token tok = util::pop(postfixQueue);
+        bool wasConst = false;
         if (tok.get_kind() == TokenKind::NUMBER_LITERAL) {
             exprStack.push(std::make_unique<ConstantExpressionNode>(std::stoi(tok.get_content())));
+            wasConst = true;
         } else if (tok.get_kind() == TokenKind::IDENTIFIER) {
             if (parser->resolve_symbol(tok.get_content())->kind == SymbolKind::VARIABLE) {
                 exprStack.push(std::make_unique<VariableExpressionNode>(tok.get_content()));
@@ -131,6 +133,10 @@ std::unique_ptr<ExpressionNode> ExpressionParser::parse(const std::vector<Token>
             exprStack.push(std::make_unique<BinaryOperationNode>(op_type, std::move(opA), std::move(opB)));
         } else {
             throw std::runtime_error("SOMETHING VERY WRONG I THINK");
+        }
+        if (!wasConst && exprStack.top()->is_constant()) {
+            auto value = exprStack.top()->get_constant_value();
+            exprStack.top() = std::make_unique<ConstantExpressionNode>(value);
         }
     }
 
