@@ -32,18 +32,18 @@ enum class SymbolKind {
 };
 
 struct SymbolInformation {
-    SymbolInformation(int symbol_scope, SymbolKind symbol_kind, std::string symbol_type) : scope(symbol_scope),
+    SymbolInformation(size_t symbol_scope, SymbolKind symbol_kind, std::string symbol_type) : scope(symbol_scope),
                                                                                            kind(symbol_kind),
                                                                                            type(symbol_type) {
 
     }
 
-    int scope;
+    size_t scope;
     SymbolKind kind;
     std::string type;
 };
 
-using symbolmap_t = std::map<std::string, std::shared_ptr<SymbolInformation>>;
+using symbolmap_t = std::map<std::string, SymbolInformation>;
 
 struct ScopeInformation {
     ScopeInformation(ScopeInformation *parent_scope_info, StatementSequenceNode *statement_sequence)
@@ -63,7 +63,7 @@ public:
 
     std::unique_ptr<ProgramNode> parse_to_ast();
 
-    std::shared_ptr<SymbolInformation> resolve_symbol(std::string identifier);
+    SymbolInformation* resolve_symbol(std::string identifier);
 
 protected:
     StatementSequenceNode *peek_scope_statements();
@@ -72,7 +72,7 @@ protected:
 
     bool symbol_exists(std::string identifier, SymbolKind kind);
 
-    std::shared_ptr<SymbolInformation> resolve_symbol_in_scope(std::string identifier, ScopeInformation* scope_info);
+    SymbolInformation* resolve_symbol_in_scope(std::string identifier, ScopeInformation* scope_info);
 
     bool at_program_end();
 

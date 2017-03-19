@@ -50,10 +50,10 @@ std::unique_ptr<ProgramNode> Parser::parse_to_ast() {
                                     name_tok.get_content());
                         }
                         // register symbol
-                        peek_scope_info()->symbol_map[name_tok.get_content()] = std::shared_ptr<SymbolInformation>(
-                                new SymbolInformation((int) scopes.size(),
-                                                      SymbolKind::VARIABLE,
-                                                      keyword_type));
+                        peek_scope_info()->symbol_map.emplace(name_tok.get_content(),
+                                                              SymbolInformation(scopes.size(),
+                                                                                SymbolKind::VARIABLE,
+                                                                                keyword_type));
                     } else if (atGlobalScope && (lookahead.get_kind() == TokenKind::ROUND_BRACE)) {
                         // A function declaration
                         FunctionDeclarationNode *func = peek_scope_statements()->append_new_statement<FunctionDeclarationNode>(
@@ -78,10 +78,10 @@ std::unique_ptr<ProgramNode> Parser::parse_to_ast() {
                         take_token();
                         Token body_open = read_expected_token(TokenKind::CURLY_BRACE);
                         // register symbol for function (with return type!)
-                        peek_scope_info()->symbol_map[name_tok.get_content()] = std::shared_ptr<SymbolInformation>(
-                                new SymbolInformation((int) scopes.size(),
-                                                      SymbolKind::FUNCTION,
-                                                      keyword_type));
+                        peek_scope_info()->symbol_map.emplace(name_tok.get_content(),
+                                                              SymbolInformation(scopes.size(),
+                                                                                SymbolKind::FUNCTION,
+                                                                                keyword_type));
                     }
                 } else if (!atGlobalScope) { // control keywords are not valid on the global scope
                     // control keyword (eg. if, while, return)
@@ -204,22 +204,20 @@ std::vector<Token> Parser::read_until_statement_end() {
     return read_until_token(TokenKind::STMT_SEP, true);
 }
 
-std::shared_ptr<SymbolInformation>
-Parser::resolve_symbol_in_scope(std::string identifier, ScopeInformation *scope_info) {
+SymbolInformation* Parser::resolve_symbol_in_scope(std::string identifier, ScopeInformation *scope_info) {
     if (scope_info == nullptr) return nullptr;
 
     auto iter = scope_info->symbol_map.find(identifier);
     if (iter == scope_info->symbol_map.end())
         return resolve_symbol_in_scope(identifier, scope_info->parent_scope);
-    return iter->second;
+    return &iter->second;
 }
 
 bool Parser::symbol_exists(std::string identifier, SymbolKind kind) {
-    std::shared_ptr<SymbolInformation> symbol_info = resolve_symbol(identifier);
-    if (symbol_info == nullptr) return false;
-    return symbol_info->kind == kind;
+    SymbolInformation* symbol_info = resolve_symbol(identifier);
+    return symbol_info && symbol_info->kind == kind;
 }
 
-std::shared_ptr<SymbolInformation> Parser::resolve_symbol(std::string identifier) {
+SymbolInformation* Parser::resolve_symbol(std::string identifier) {
     return resolve_symbol_in_scope(identifier, peek_scope_info());
 }
