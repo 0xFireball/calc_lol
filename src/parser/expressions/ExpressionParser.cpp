@@ -17,6 +17,8 @@ using std::endl;
 #include "../ast/expr/FunctionCallNode.h"
 #include "../Parser.h"
 
+#include "../../util/container_util.h"
+
 static bool is_left_associative(std::string op) {
     if (op == "+" || op == "-" ||
         op == "*" || op == "/" || op == "%" ||
@@ -39,10 +41,16 @@ std::unique_ptr<ExpressionNode> ExpressionParser::parse(const std::vector<Token>
     /// convert to postfix form
     std::queue<Token> postfixQueue;
     std::stack<Token> opStack;
+    std::stack<size_t> arityStack;
+    std::map<std::string, size_t> arityMap;
     for (const Token &tok : tokens) {
         switch (tok.get_kind()) {
             case TokenKind::NUMBER_LITERAL:
+                if (arityStack.size() && arityStack.top()==0) arityStack.top()++;
+                postfixQueue.push(tok);
+                break;
             case TokenKind::IDENTIFIER:
+                if (arityStack.size() && arityStack.top()==0) arityStack.top()++;
                 switch (parser->resolve_symbol(tok.get_content())->kind) {
                     case SymbolKind::VARIABLE:
                         postfixQueue.push(tok);
@@ -53,10 +61,10 @@ std::unique_ptr<ExpressionNode> ExpressionParser::parse(const std::vector<Token>
                 }
                 break;
             case TokenKind::ARG_SEP:
+                arityStack.top()++; // TODO: handle invalid ARG_SEP
                 // TODO: handle not encountering a parenthesis (syntax error)
                 while (opStack.top().get_kind() != TokenKind::ROUND_BRACE) {
-                    postfixQueue.push((opStack.top())); // silence stupid editor bug
-                    opStack.pop();
+                    postfixQueue.push(util::pop(opStack));
                 }
                 break;
             case TokenKind::OPERATOR: {
@@ -72,19 +80,20 @@ std::unique_ptr<ExpressionNode> ExpressionParser::parse(const std::vector<Token>
                 break;
             }
             case TokenKind::ROUND_BRACE: // '('
+                if (opStack.top().get_kind() == TokenKind::IDENTIFIER)
+                    arityStack.push(0);
                 opStack.push(tok);
                 break;
             case TokenKind::CLOSE_ROUND_BRACE: // ')'
                 // TODO: handle not encountering a parenthesis (syntax error)
                 while (opStack.top().get_kind() != TokenKind::ROUND_BRACE) {
-                    postfixQueue.push((opStack.top())); // silence stupid editor bug
-                    opStack.pop();
+                    postfixQueue.push(util::pop(opStack));
                 }
                 opStack.pop(); // pop the open parenthesis
                 // if opStack.top() is a function token, pop it onto the output queue
                 if (opStack.top().get_kind() == TokenKind::IDENTIFIER) {
-                    postfixQueue.push((opStack.top())); // silence stupid editor bug
-                    opStack.pop();
+                    arityMap.emplace(opStack.top().get_content(), util::pop(arityStack));
+                    postfixQueue.push(util::pop(opStack));
                 }
                 break;
             default:
@@ -94,29 +103,29 @@ std::unique_ptr<ExpressionNode> ExpressionParser::parse(const std::vector<Token>
     while (opStack.size() > 0) {
         if (opStack.top().get_kind() == TokenKind::ROUND_BRACE)
             throw std::runtime_error("mismatched parentheses in expression");
-        postfixQueue.push((opStack.top()));
-        opStack.pop();
+        postfixQueue.push(util::pop(opStack));
     }
 
     /// build ExpressionNode
     std::stack<std::unique_ptr<ExpressionNode>> exprStack;
     while (postfixQueue.size() > 0) {
-        Token tok = postfixQueue.front();
-        postfixQueue.pop();
+        Token tok = util::pop(postfixQueue);
         if (tok.get_kind() == TokenKind::NUMBER_LITERAL) {
             exprStack.push(std::make_unique<ConstantExpressionNode>(std::stoi(tok.get_content())));
         } else if (tok.get_kind() == TokenKind::IDENTIFIER) {
             if (parser->resolve_symbol(tok.get_content())->kind == SymbolKind::VARIABLE) {
                 exprStack.push(std::make_unique<VariableExpressionNode>(tok.get_content()));
             } else { // SymbolKind::FUNCTION
-                // TODO
+                FunctionCallNode::arglist_t args;
+                size_t numArgs = arityMap[tok.get_content()];
+                for (size_t n = 0; n < numArgs; n++)
+                    args.push_back(util::pop(exprStack));
+                exprStack.push(std::make_unique<FunctionCallNode>(tok.get_content(), std::move(args)));
             }
         } else if (tok.get_kind() == TokenKind::OPERATOR) {
             ExpressionOperationType op_type = get_operation_type(tok.get_content());
-            auto opB = std::move(exprStack.top());
-            exprStack.pop();
-            auto opA = std::move(exprStack.top());
-            exprStack.pop();
+            auto opB = util::pop(exprStack);
+            auto opA = util::pop(exprStack);
             exprStack.push(std::make_unique<BinaryOperationNode>(op_type, std::move(opA), std::move(opB)));
         } else {
             throw std::runtime_error("SOMETHING VERY WRONG I THINK");

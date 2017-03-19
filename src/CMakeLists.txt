@@ -61,6 +61,6 @@ set(SOURCE_FILES
 
         optimizer/PreOptimizer.cpp
         optimizer/PreOptimizer.h
-        parser/ast/expr/FunctionCallNode.h)
+        parser/ast/expr/FunctionCallNode.h util/container_util.h)
 
 add_executable(CookieToastCompiler ${SOURCE_FILES})
