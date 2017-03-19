@@ -14,7 +14,9 @@ enum class FunctionBodyType {
 class FunctionDeclarationNode : public StatementSequenceNode {
 public:
 
-    FunctionDeclarationNode(std::string function_name, std::string return_type) : name(function_name),
+    FunctionDeclarationNode(std::string function_name, std::string return_type) : StatementSequenceNode(
+            (AstNodeKind) ((int) AstNodeKind::STATEMENT_SEQUENCE | (int) AstNodeKind::FUNCTION_DECLARATION)),
+                                                                                  name(function_name),
                                                                                   ret_type(return_type) {
     }
 

@@ -9,6 +9,7 @@ enum class AstNodeKind {
     STATEMENT_SEQUENCE = 1 << 2,
     CONDITIONAL = 1 << 3,
     LOOP = 1 << 4,
+    FUNCTION_DECLARATION = 1 << 5,
     MISC = 1 << 31
     // TODO: Add more nodes as they are needed
 };

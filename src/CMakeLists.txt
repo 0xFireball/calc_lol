@@ -8,7 +8,6 @@ set(CMAKE_CXX_STANDARD 14)
 set(SOURCE_FILES
         main.cpp
 
-        util/bitmath.h
         util/NotImplementedException.h
         
         preprocessor/Preprocessor.cpp

@@ -10,7 +10,7 @@ class StatementSequenceNode : public AstNode {
 public:
     using nodelist_t = std::vector<std::unique_ptr<AstNode>>;
 
-    StatementSequenceNode() {}
+    StatementSequenceNode(AstNodeKind kind = AstNodeKind::MISC) : AstNode(kind) {}
 
     StatementSequenceNode(StatementSequenceNode &&other) = default; // moveable
     StatementSequenceNode(const StatementSequenceNode &) = delete; // non-copyable because of the children list stuff
