@@ -16,7 +16,7 @@ Parser::Parser(std::vector<Token> tokens) : tokens(std::move(tokens)) {
 std::unique_ptr<ProgramNode> Parser::parse_to_ast() {
     std::unique_ptr<ProgramNode> programNode = std::make_unique<ProgramNode>();
     auto programNodeInst = programNode.get(); // to keep a variable for debugging
-    scopes.push(ScopeInformation(programNode.get()));
+    scopes.push(ScopeInformation(nullptr, programNode.get()));
     std::stack<symbolmap_t> symbol_map_stack;
 
     while (!at_program_end()) {
@@ -41,7 +41,7 @@ std::unique_ptr<ProgramNode> Parser::parse_to_ast() {
                             take_token();
                             std::vector<Token> valueExpression = read_until_statement_end();
                             std::unique_ptr<ExpressionNode> value_expr_tree = ExpressionNode::create_from_tokens(
-                                    valueExpression);
+                                    valueExpression, this);
                             peek_scope_statements()->append_new_statement<VariableDeclarationNode>(
                                     name_tok.get_content(),
                                     std::move(value_expr_tree));
@@ -50,7 +50,7 @@ std::unique_ptr<ProgramNode> Parser::parse_to_ast() {
                                     name_tok.get_content());
                         }
                         // register symbol
-                        peek_scope_info().symbol_map[name_tok.get_content()] = std::shared_ptr<SymbolInformation>(
+                        peek_scope_info()->symbol_map[name_tok.get_content()] = std::shared_ptr<SymbolInformation>(
                                 new SymbolInformation((int) scopes.size(),
                                                       SymbolKind::VARIABLE,
                                                       keyword_type));
@@ -59,7 +59,7 @@ std::unique_ptr<ProgramNode> Parser::parse_to_ast() {
                         FunctionDeclarationNode *func = peek_scope_statements()->append_new_statement<FunctionDeclarationNode>(
                                 name_tok.get_content(),
                                 keyword_type); // add the function to the old scope (with return type!)...
-                        scopes.push(func); // ..and set that as the new scope!
+                        scopes.push(ScopeInformation(peek_scope_info(), func)); // ..and set that as the new scope!
                         take_token(); // eat open brace (lookahead)
                         while (peek_next_token().get_kind() != TokenKind::CLOSE_ROUND_BRACE) {
                             Token arg_type = read_expected_token(TokenKind::KEYWORD);
@@ -78,7 +78,7 @@ std::unique_ptr<ProgramNode> Parser::parse_to_ast() {
                         take_token();
                         Token body_open = read_expected_token(TokenKind::CURLY_BRACE);
                         // register symbol for function (with return type!)
-                        peek_scope_info().symbol_map[name_tok.get_content()] = std::shared_ptr<SymbolInformation>(
+                        peek_scope_info()->symbol_map[name_tok.get_content()] = std::shared_ptr<SymbolInformation>(
                                 new SymbolInformation((int) scopes.size(),
                                                       SymbolKind::FUNCTION,
                                                       keyword_type));
@@ -88,7 +88,7 @@ std::unique_ptr<ProgramNode> Parser::parse_to_ast() {
                     std::string keyword_content = keyword.get_content();
                     // get expression
                     std::vector<Token> res_expr = read_until_statement_end();
-                    std::unique_ptr<ExpressionNode> expr_tree = ExpressionNode::create_from_tokens(res_expr);
+                    std::unique_ptr<ExpressionNode> expr_tree = ExpressionNode::create_from_tokens(res_expr, this);
                     if (keyword_content == "return") {
                         peek_scope_statements()->append_new_statement<ReturnStatementNode>(std::move(expr_tree));
                     } else if (keyword_content == "if") {
@@ -118,7 +118,7 @@ std::unique_ptr<ProgramNode> Parser::parse_to_ast() {
                     }
                     std::vector<Token> valueExpression = read_until_statement_end();
                     std::unique_ptr<ExpressionNode> value_expr_tree = ExpressionNode::create_from_tokens(
-                            valueExpression);
+                            valueExpression, this);
                     peek_scope_statements()->append_new_statement<VariableAssignmentNode>(identifier.get_content(),
                                                                                           std::move(value_expr_tree));
                 }
@@ -143,8 +143,8 @@ StatementSequenceNode *Parser::peek_scope_statements() {
     return scopes.top().statements;
 }
 
-ScopeInformation Parser::peek_scope_info() {
-    return scopes.top();
+ScopeInformation *Parser::peek_scope_info() {
+    return &scopes.top();
 }
 
 bool Parser::at_program_end() {
@@ -204,23 +204,20 @@ std::vector<Token> Parser::read_until_statement_end() {
     return read_until_token(TokenKind::STMT_SEP, true);
 }
 
+std::shared_ptr<SymbolInformation>
+Parser::resolve_symbol_in_scope(std::string identifier, ScopeInformation *scope_info) {
+    if (scope_info == nullptr) return nullptr;
+    if (scope_info->symbol_map.count(identifier) == 0)
+        return resolve_symbol_in_scope(identifier, scope_info->parent_scope);
+    return scope_info->symbol_map[identifier];
+}
+
 bool Parser::symbol_exists(std::string identifier, SymbolKind kind) {
-    std::stack<ScopeInformation> tmp_scopes;
-    std::shared_ptr<SymbolInformation> found_info(nullptr);
-    while (!scopes.empty()) {
-        ScopeInformation scope_inf = scopes.top();
-        if (scope_inf.symbol_map.count(identifier)) {
-            found_info = scope_inf.symbol_map[identifier];
-            break; // identifier was found
-        }
-        tmp_scopes.push(scope_inf);
-        scopes.pop();
-    }
-    // reassemble
-    while (!tmp_scopes.empty()) {
-        scopes.push(tmp_scopes.top());
-        tmp_scopes.pop();
-    }
-    if (found_info == nullptr) return false;
-    return found_info->kind == kind;
+    std::shared_ptr<SymbolInformation> symbol_info = resolve_symbol(identifier);
+    if (symbol_info == nullptr) return false;
+    return symbol_info->kind == kind;
+}
+
+std::shared_ptr<SymbolInformation> Parser::resolve_symbol(std::string identifier) {
+    return resolve_symbol_in_scope(identifier, peek_scope_info());
 }

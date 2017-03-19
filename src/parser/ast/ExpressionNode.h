@@ -5,10 +5,11 @@
 #include <memory>
 #include "AstNode.h"
 #include "../../lexer/Token.h"
+#include "../Parser.h"
 
 class ExpressionNode : public AstNode {
 public:
-    static std::unique_ptr<ExpressionNode> create_from_tokens(std::vector<Token> &tokens);
+    static std::unique_ptr<ExpressionNode> create_from_tokens(std::vector<Token> &tokens, Parser *parser);
 
     virtual std::string to_string() const {
         throw std::runtime_error("not implemented in this class!");

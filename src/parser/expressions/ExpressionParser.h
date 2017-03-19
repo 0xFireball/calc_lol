@@ -10,5 +10,5 @@
  * */
 class ExpressionParser {
 public:
-    static std::unique_ptr<ExpressionNode> parse(const std::vector<Token> &tokens);
+    static std::unique_ptr<ExpressionNode> parse(const std::vector<Token> &tokens, Parser *parser);
 };
