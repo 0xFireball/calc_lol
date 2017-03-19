@@ -6,14 +6,14 @@
 
 class SyntaxTreeLinearizer {
 public:
-    SyntaxTreeLinearizer(CodeEmitter* code_emitter) : emitter(code_emitter) {
+    SyntaxTreeLinearizer(CodeEmitter *code_emitter) : emitter(code_emitter) {
     }
 
     std::unique_ptr<TAISequence> linearize_syntax_tree();
 
 protected:
 
-    std::unique_ptr<TAISequence> linearize_statement_sequence(std::unique_ptr<StatementSequenceNode> stmt_seq);
+    std::unique_ptr<TAISequence> linearize_statement_sequence(StatementSequenceNode *stmt_seq);
 
 private:
     CodeEmitter *emitter;

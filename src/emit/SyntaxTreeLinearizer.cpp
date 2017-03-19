@@ -8,9 +8,9 @@ std::unique_ptr<TAISequence> SyntaxTreeLinearizer::linearize_syntax_tree() {
 }
 
 std::unique_ptr<TAISequence>
-SyntaxTreeLinearizer::linearize_statement_sequence(std::unique_ptr<StatementSequenceNode> stmt_seq) {
+SyntaxTreeLinearizer::linearize_statement_sequence(StatementSequenceNode *stmt_seq) {
     for (auto stmt : stmt_seq->get_sub_nodes()) {
-        
+
     }
     return nullptr;
 }
