@@ -49,9 +49,11 @@ std::unique_ptr<ExpressionNode> ExpressionParser::parse(const std::vector<Token>
                 if (arityStack.size() && arityStack.top()==0) arityStack.top()++;
                 postfixQueue.push(tok);
                 break;
-            case TokenKind::IDENTIFIER:
+            case TokenKind::IDENTIFIER: {
                 if (arityStack.size() && arityStack.top()==0) arityStack.top()++;
-                switch (parser->resolve_symbol(tok.get_content())->kind) {
+                auto symbolInfo = parser->resolve_symbol(tok.get_content());
+                if (!symbolInfo) throw std::runtime_error("unresolved identifier: "+tok.get_content());
+                switch (symbolInfo->kind) {
                     case SymbolKind::VARIABLE:
                         postfixQueue.push(tok);
                         break;
@@ -60,7 +62,7 @@ std::unique_ptr<ExpressionNode> ExpressionParser::parse(const std::vector<Token>
                         break;
                 }
                 break;
-            case TokenKind::ARG_SEP:
+            } case TokenKind::ARG_SEP:
                 arityStack.top()++; // TODO: handle invalid ARG_SEP
                 // TODO: handle not encountering a parenthesis (syntax error)
                 while (opStack.top().get_kind() != TokenKind::ROUND_BRACE) {
