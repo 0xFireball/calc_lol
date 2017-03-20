@@ -74,10 +74,10 @@ std::unique_ptr<ProgramNode> Parser::parse_to_ast() {
                                 take_token(); // eat the arg separator and loop
                             }
                             // register parameter symbol
-                            peek_scope_info()->symbol_map[arg_name.get_content()] = std::shared_ptr<SymbolInformation>(
-                                    new SymbolInformation((int) scopes.size(),
-                                                          SymbolKind::VARIABLE,
-                                                          arg_type.get_content()));
+                            peek_scope_info()->symbol_map.emplace(arg_name.get_content(),
+                                                                  SymbolInformation(scopes.size(),
+                                                                                    SymbolKind::VARIABLE,
+                                                                                    arg_type.get_content()));
                         }
                         // eat the closing brace
                         take_token();
